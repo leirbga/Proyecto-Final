@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "css": "npx @tailwindcss/cli -i ./input.css -o ./PaginaPrincipal/output.css --watch",
-    "dev": "cross-env NODE_ENV=dev nodemon app.js"
+    "dev": "cross-env NODE_ENV=dev app.js"
   },
   "author": "",
   "license": "ISC",
