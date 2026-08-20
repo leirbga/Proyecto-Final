@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import User from '../models/users.js';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
+import { userExtractor } from '../../../middleware/auth.js';
 
 const usersRouter = Router();
 
@@ -87,5 +88,6 @@ usersRouter.post('/', async (req, res) => {
     res.status(500).json({ error: 'Error interno del servidor al crear usuario' });
   }
 });
+
 
 export default usersRouter;

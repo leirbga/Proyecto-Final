@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../PaginaPrincipal/output.css">
+    <link rel="stylesheet" href="../../PaginaPrincipal/output.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <title>WebCraft</title>
 </head>
@@ -17,10 +17,10 @@
             
             <!-- Navegación de Secciones -->
             <div class="flex flex-col gap-2">
-                <a href="/Web-dev/Templates" id="btn-tienda" class="w-full text-left px-4 py-2.5 rounded-lg font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 transition-all hover:bg-cyan-500/20">
+                <a href="/Web-dev/Templates" id="btn-tienda" class="w-full text-left px-4 py-2.5 rounded-lg font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
                     Ver Paginas
                 </a>
-                <a href="/Web-dev/MisPaginas" id="btn-mis-paginas" class="w-full text-left px-4 py-2.5 rounded-lg font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
+                <a href="/Web-dev/MisPaginas" id="btn-mis-paginas" class="w-full text-left px-4 py-2.5 rounded-lg font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 transition-all hover:bg-cyan-500/20">
                     Mis Páginas
                 </a>
                 <a href="/Web-dev/WebCreate" id="btn-mis-paginas" class="w-full text-left px-4 py-2.5 rounded-lg font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
@@ -71,12 +71,23 @@
 
         </aside>
 
+        <!-- Contenido Principal (Catálogo de Blogs) -->
+        <main class="flex-1 p-8">
+
+            <!-- Grid de Blogs disponibles -->
+            <div id="shop" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- EJEMPLO DE TARJETA DE BLOG (Muestra dinámica) -->
+                <article class="bg-slate-900/80 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col hover:border-slate-700 transition-all">
+                    
+                </article>
+
+            </div>
+        </main>
 
     </div>
-    
 
-
-<script type="module" src="../PaginaPrincipal/componentes/nav.js"></script>
-<script src="index.js"></script>
+<script type="module" src="../../PaginaPrincipal/componentes/nav.js"></script>
+<script type="module" src="index.js"></script>
 </body>
 </html>

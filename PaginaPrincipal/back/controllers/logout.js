@@ -18,6 +18,8 @@ logoutRouter.post('/', async (req, res) => {
   });
 
   return res.status(200).json({ message: 'Sesión cerrada exitosamente' });
+
+  window.location.pathname = `/logout`;
 });
 
 export default logoutRouter;

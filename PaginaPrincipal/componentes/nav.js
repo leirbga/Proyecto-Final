@@ -27,10 +27,10 @@ const navHome = () => {
 
         <!-- Botón / Login -->
         <div class="flex items-center gap-4">
-            <a href="/login" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+            <a href="/front/login" class="text-sm font-medium text-slate-300 hover:text-white transition-colors">
                 Iniciar Sesión
             </a>
-            <a href="/registro" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-md shadow-cyan-500/20 transition-all">
+            <a href="/front/registro" class="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow-md shadow-cyan-500/20 transition-all">
                 Registrarse
             </a>
         </div>
@@ -156,7 +156,7 @@ const NavClientes = () => {
         createNotificacion(false, 'Sesión cerrada correctamente');
 
         setTimeout(() => {
-          window.location.href = '/login';
+          window.location.href = '/front/login';
         }, 1000);
       } catch (error) {
         console.error('Error al cerrar sesión:', error);
@@ -195,7 +195,7 @@ const NavDev = () => {
         createNotificacion(false, 'Sesión de desarrollador cerrada');
 
         setTimeout(() => {
-          window.location.href = '/login';
+          window.location.href = '/front/login';
         }, 1000);
       } catch (error) {
         console.error('Error al cerrar sesión:', error);
@@ -219,7 +219,54 @@ const Tematicas = () => {
   }
 };
 
-// 💡 EVALUACIÓN DE RUTAS CORREGIDA
+const NavUserLogin = () =>{
+
+navBar.innerHTML = `
+    <div class="max-w-7xl h-full mx-auto flex items-center justify-between px-6">        
+        <!-- Menu Principal-->
+        <div class="flex items-center gap-8">
+            <a href="/" class="text-xl font-bold text-cyan-400 tracking-wide flex items-center gap-2">
+            WebCraft <span class="text-xs bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-full font-mono">Dev</span>
+            </a>
+
+            <!-- Enlaces de Navegación -->
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
+                <a href="#" class="hover:text-cyan-400 transition-colors">Inicio</a>
+                <a href="#" class="hover:text-cyan-400 transition-colors">Acerca de</a>
+                <a href="#" class="hover:text-cyan-400 transition-colors">Contacto</a>
+            </div>
+        </div>
+    <div class="flex items-center gap-6 text-sm font-medium text-slate-300 ml-auto">
+            <!-- Botón Cerrar Sesión -->
+            <button id="closeSesionDev" class="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/40 transition-all cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </div>`;
+
+     const btnCloseSesion = document.querySelector('#closeSesionDev');
+  if (btnCloseSesion) {
+    btnCloseSesion.addEventListener('click', async () => {
+      try {
+        await axios.post('/api/logout');
+        createNotificacion(false, 'Sesión de desarrollador cerrada');
+
+        setTimeout(() => {
+          window.location.href = '/front/login';
+        }, 1000);
+      } catch (error) {
+        console.error('Error al cerrar sesión:', error);
+        createNotificacion(true, 'Hubo un problema al cerrar la sesión');
+      }
+    });
+  }
+};
+
+
+
 const path = window.location.pathname;
 
 if (path === '/' || path === '/index.html') {

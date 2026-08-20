@@ -10,12 +10,11 @@ import { fileURLToPath } from 'url';
 // IMPORTACIÓN DE CONTROLADORES
 import usersRouter from './PaginaPrincipal/back/controllers/userVerify.js';
 import loginRouter from './PaginaPrincipal/back/controllers/login.js';
-import { isDev } from './PaginaPrincipal/back/controllers/dev.js';
 import createWebRouter from './PaginaPrincipal/back/controllers/createWebRouter.js';
-
-// 💡 Importación corregida (por export default)
-import userExtractor from './middleware/auth.js';
 import logoutRouter from './PaginaPrincipal/back/controllers/logout.js';
+
+// 💡 IMPORTACIÓN DE MIDDLEWARES UNIFICADOS
+import { userExtractor, isDev } from './middleware/auth.js';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -28,7 +27,7 @@ app.use(cors());
 app.use(cookieParser());
 app.use(morgan('tiny'));
 
-// Aumentamos el límite de JSON para soportar las imágenes Base64
+// Soporte para imágenes Base64
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
@@ -39,11 +38,10 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 
-// Protegemos la creación de publicaciones con userExtractor
-app.use('/api/CreateWeb', userExtractor, createWebRouter);
+// Protegemos la creación de publicaciones con userExtractor e isDev
+app.use('/api/CreateWeb', userExtractor, isDev, createWebRouter);
 
-//Logout
-
+// Logout
 app.use('/api/logout', logoutRouter);
 
 
@@ -51,11 +49,12 @@ app.use('/api/logout', logoutRouter);
 // RUTAS PROTEGIDAS (HTML Y VISTAS PRIVADAS)
 // ==========================================
 
-// Vista y carpeta para Web-Dev (protegida con isDev)
-app.get('/Web-dev', isDev, (req, res) => {
+// Para acceder a Web-Dev, ejecutamos userExtractor primero para poblar req.user y luego isDev para verificar el rol
+app.get('/Web-dev', userExtractor, isDev, (req, res) => {
   res.sendFile(path.join(__dirname, 'Web-Dev', 'index.html')); 
 });
-app.use('/Web-Dev', isDev, express.static(path.join(__dirname, 'Web-Dev')));
+
+app.use('/Web-Dev', userExtractor, isDev, express.static(path.join(__dirname, 'Web-Dev')));
 
 // Vista protegida para Web-Clientes (requiere iniciar sesión)
 app.use('/Web-Clientes', userExtractor, express.static(path.join(__dirname, 'Web-Clientes')));

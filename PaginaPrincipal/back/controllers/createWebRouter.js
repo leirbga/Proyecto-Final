@@ -3,11 +3,23 @@ import CreateWeb from '../models/createWeb.js';
 
 const createWebRouter = express.Router();
 
+createWebRouter.get('/', async (req, res) => {
+  try {
+    const posts = await CreateWeb.find({})
+      .sort({ createdAt: -1 })
+      .populate('user', 'name email');
+
+    return res.status(200).json(posts);
+  } catch (error) {
+    console.error('Error al obtener los posts:', error);
+    return res.status(500).json({ error: 'Error al cargar las publicaciones de MongoDB' });
+  }
+});
+
 createWebRouter.post('/', async (req, res) => {
   try {
     const { title, description, price, theme, url, image } = req.body;
 
-    // req.user ya fue inyectado por userExtractor en app.js
     const userId = req.user?.id || req.user?._id;
 
     if (!userId) {
