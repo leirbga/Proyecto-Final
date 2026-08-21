@@ -27,7 +27,7 @@ export const isDev = async (req, res, next) => {
       return res.status(401).json({ error: 'Acceso denegado. No hay sesión activa.' });
     }
 
-    // Buscamos al usuario en la BD para verificar el flag 'dev'
+  
     const user = await User.findById(userId);
 
     if (!user) {
@@ -38,7 +38,6 @@ export const isDev = async (req, res, next) => {
       return res.status(403).json({ error: 'Acceso restringido. Solo para desarrolladores.' });
     }
 
-    // Reemplazamos req.user con el documento completo de Mongoose si es necesario
     req.user = user;
     next();
 

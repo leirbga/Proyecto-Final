@@ -11,14 +11,14 @@ usersRouter.post('/', async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // 1. Validar campos requeridos
+
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
     const cleanEmail = email.toLowerCase().trim();
 
-    // 2. Verificar si el usuario ya existe
+  
     const existingUser = await User.findOne({ email: cleanEmail });
     if (existingUser) {
       return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
@@ -43,11 +43,11 @@ usersRouter.post('/', async (req, res) => {
       console.error('Error al conectar con Abstract API:', apiError.message);
     }
 
-    // 3. Hashear la contraseña
+
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-    // 4. Crear instancia del usuario
+  
     const newUser = new User({
       name,
       email: cleanEmail,
@@ -55,10 +55,9 @@ usersRouter.post('/', async (req, res) => {
       verified: true,
     });
 
-    // 5. Guardar en MongoDB
+  
     await newUser.save();
 
-    // 6. Firmar el JWT con el _id del usuario
     const token = jwt.sign(
       { id: newUser._id, email: newUser.email }, 
       process.env.ACCESS_TOKEN_SECRET, 

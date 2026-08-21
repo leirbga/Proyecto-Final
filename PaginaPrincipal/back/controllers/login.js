@@ -11,15 +11,15 @@ loginRouter.post('/', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1. Validar que vengan los datos
+  
     if (!email || !password) {
       return res.status(400).json({ error: 'Todos los campos son obligatorios' });
     }
 
-    // 2. Normalizar el email (eliminar espacios y mayúsculas)
+   
     const cleanEmail = email.toLowerCase().trim();
 
-    // 3. Buscar el usuario
+  
     const userExist = await User.findOne({ email: cleanEmail });
 
     if (!userExist) {
@@ -30,14 +30,14 @@ loginRouter.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Email no verificado' });
     }
 
-    // 4. Comparar contraseñas
+  
     const isPasswordCorrect = await bcrypt.compare(password, userExist.passwordHash);
 
     if (!isPasswordCorrect) {
       return res.status(400).json({ error: 'Email o Contraseña incorrectos' });
     }
 
-    // 5. Crear el payload y firmar el JWT usando _id
+   
     const userForToken = {
       id: userExist._id,
       email: userExist.email
