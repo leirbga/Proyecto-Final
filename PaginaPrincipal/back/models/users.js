@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema({
 
   carrito: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Blog'
+    ref: 'CreateWeb'
   }]
 });
 

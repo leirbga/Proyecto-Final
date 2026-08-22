@@ -84,43 +84,15 @@ const NavClientes = () => {
         <!-- Acciones: Carrito + Cerrar Sesión -->
         <div class="flex items-center gap-6 text-sm font-medium text-slate-300 ml-auto">
             
-            <!-- Carrito Desplegable -->
-            <div class="relative">
-                <button id="btn-carrito" class="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 text-slate-200 px-3.5 py-2 rounded-xl border border-slate-700/80 transition-all cursor-pointer">
-                    <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
-                    </svg>
-                    <span>Carrito</span>
-                    <!-- Contador de items -->
-                    <span id="carrito-count" class="bg-cyan-500 text-slate-950 font-bold text-xs px-2 py-0.5 rounded-full">0</span>
-                </button>
+            <!-- Botón de Redirección Directa al Carrito -->
+            <a href="/Web-Clientes/Carrito" id="btn-carrito" class="flex items-center gap-2 bg-slate-800/80 hover:bg-slate-800 text-slate-200 px-3.5 py-2 rounded-xl border border-slate-700/80 transition-all cursor-pointer">
+                <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z"/>
+                </svg>
+                <span>Ver Carrito</span>
+            </a>
 
-                <!-- Menú Desplegable (Hidden por defecto) -->
-                <div id="dropdown-carrito" class="hidden absolute right-0 mt-3 w-80 bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-4 z-50 transition-all">
-                    <div class="flex items-center justify-between pb-3 border-b border-slate-800">
-                        <h4 class="font-semibold text-white">Mi Carrito</h4>
-                        <span id="carrito-items-text" class="text-xs text-slate-400">0 items</span>
-                    </div>
-
-                    <!-- Lista de productos agregados -->
-                    <div id="carrito-lista" class="max-h-60 overflow-y-auto my-3 flex flex-col gap-3 pr-1 text-sm">
-                        <p class="text-slate-400 text-xs text-center py-4">El carrito está vacío</p>
-                    </div>
-
-                    <!-- Footer del Carrito -->
-                    <div class="pt-3 border-t border-slate-800 flex flex-col gap-3">
-                        <div class="flex justify-between items-center">
-                            <span class="text-xs text-slate-400 uppercase font-semibold">Total:</span>
-                            <span id="carrito-total" class="text-base font-bold text-cyan-400">$0</span>
-                        </div>
-                        <a href="/Web-Clientes/Carrito" class="w-full bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-center font-semibold py-2 rounded-lg text-sm transition-all block">
-                            Ver Carrito
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Botón Cerrar Sesión Estilizado -->
+            <!-- Botón Cerrar Sesión -->
             <button id="closeSesion" class="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/40 transition-all cursor-pointer">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
@@ -130,24 +102,7 @@ const NavClientes = () => {
         </div>
     </div>`;
 
-  // LÓGICA DEL CARRITO
-  const btnCarrito = document.querySelector('#btn-carrito');
-  const dropdownCarrito = document.querySelector('#dropdown-carrito');
-
-  if (btnCarrito && dropdownCarrito) {
-    btnCarrito.addEventListener('click', (e) => {
-      e.stopPropagation();
-      dropdownCarrito.classList.toggle('hidden');
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!dropdownCarrito.contains(e.target) && !btnCarrito.contains(e.target)) {
-        dropdownCarrito.classList.add('hidden');
-      }
-    });
-  }
-
-  // LÓGICA DE CERRAR SESIÓN
+  // Lógica de Cerrar Sesión
   const btnCloseSesion = document.querySelector('#closeSesion');
   if (btnCloseSesion) {
     btnCloseSesion.addEventListener('click', async () => {
@@ -265,7 +220,58 @@ navBar.innerHTML = `
   }
 };
 
+const NavCarrito = () => {
+  const navBar = document.getElementById('navBar');
+  if (!navBar) return;
 
+  navBar.innerHTML = `
+    <div class="max-w-7xl h-full mx-auto flex items-center justify-between px-6">        
+        <!-- Logo / Nombre -->
+        <div class="flex items-center gap-8">
+            <a href="/Web-Clientes" class="text-xl font-bold text-cyan-400 tracking-wide flex items-center gap-2">
+                WebCraft
+            </a>
+        </div>
+
+        <!-- Acciones: Volver Atrás + Cerrar Sesión -->
+        <div class="flex items-center gap-6 text-sm font-medium text-slate-300 ml-auto">
+            
+            <!-- Botón Volver Atrás Estilizado -->
+            <a href="/Web-Clientes" id="btn-back" class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800/80 hover:bg-cyan-500/10 text-slate-300 hover:text-cyan-400 border border-slate-700/80 hover:border-cyan-500/30 transition-all shadow-sm">
+                <svg class="w-4 h-4 transition-transform group-hover:-translate-x-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                <span>Volver atrás</span>
+            </a>
+
+            <!-- Botón Cerrar Sesión -->
+            <button id="closeSesion" class="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-red-500/20 bg-red-500/10 text-red-400 hover:bg-red-500/20 hover:border-red-500/40 transition-all cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                </svg>
+                <span>Cerrar Sesión</span>
+            </button>
+        </div>
+    </div>`;
+
+  // Lógica de Cerrar Sesión
+  const btnCloseSesion = document.querySelector('#closeSesion');
+  if (btnCloseSesion) {
+    btnCloseSesion.addEventListener('click', async () => {
+      try {
+        await axios.post('/api/logout');
+        createNotificacion(false, 'Sesión cerrada correctamente');
+
+        setTimeout(() => {
+          window.location.href = '/front/login';
+        }, 1000);
+      } catch (error) {
+        console.error('Error al cerrar sesión:', error);
+        createNotificacion(true, 'Hubo un problema al cerrar la sesión');
+      }
+    });
+  }
+};
 
 const path = window.location.pathname;
 
@@ -277,10 +283,12 @@ if (path === '/' || path === '/index.html') {
 } else if (path.includes('/login')) {
     NavLogin(); 
     fondoBody();
-} else if (path.includes('/Web-Clientes')) {
+}else if (path.includes('/Web-Clientes/Carrito')){
+    NavCarrito();
+}else if (path.includes('/Web-Clientes')) {
     NavClientes(); 
     Tematicas();
-} else if (path.includes('/Web-dev') || path.includes('/Web-Dev')) {
+}else if (path.includes('/Web-dev') || path.includes('/Web-Dev')) {
     NavDev(); 
     Tematicas();
 }

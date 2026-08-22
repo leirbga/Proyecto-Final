@@ -5,9 +5,8 @@ const createWebRouter = express.Router();
 
 createWebRouter.get('/', async (req, res) => {
   try {
-    const posts = await CreateWeb.find({})
-      .sort({ createdAt: -1 })
-      .populate('user', 'name email');
+    const posts = await CreateWeb.find({}, 'title description price theme url image _id')
+      .sort({ createdAt: -1 });
 
     return res.status(200).json(posts);
   } catch (error) {
@@ -48,5 +47,6 @@ createWebRouter.post('/', async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 });
+
 
 export default createWebRouter;
