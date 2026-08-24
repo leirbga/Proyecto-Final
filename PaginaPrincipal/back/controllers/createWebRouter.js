@@ -5,7 +5,43 @@ const createWebRouter = express.Router();
 
 createWebRouter.get('/', async (req, res) => {
   try {
+
     const posts = await CreateWeb.find({}, 'title description price theme url image _id')
+      .sort({ createdAt: -1 });
+
+    return res.status(200).json(posts);
+  } catch (error) {
+    console.error('Error al obtener los posts:', error);
+    return res.status(500).json({ error: 'Error al cargar las publicaciones de MongoDB' });
+  }
+});
+
+createWebRouter.get('/price/:price', async (req, res) => {
+  try {
+    const { price } = req.params;
+    let query = {};
+
+    if (price === '0') {
+      query.price = 0; // Gratis
+    } else if (price === '15') {
+      query.price = { $lte: 15 }; // Menor o igual a $15 ($1 a $15)
+    } else if (price === '20+') {
+      query.price = { $gt: 20 }; // Mayor a $20
+    }
+
+    const posts = await CreateWeb.find(query, 'title description price theme url image _id').sort({ createdAt: -1 });
+
+    return res.status(200).json(posts);
+  } catch (error) {
+    console.error('Error al obtener los posts por precio:', error);
+    return res.status(500).json({ error: 'Error al cargar las publicaciones de MongoDB' });
+  }
+});
+
+createWebRouter.get('/:theme', async (req, res) => {
+  try {
+    const { theme } = req.params;
+    const posts = await CreateWeb.find({theme}, 'title description price theme url image _id')
       .sort({ createdAt: -1 });
 
     return res.status(200).json(posts);

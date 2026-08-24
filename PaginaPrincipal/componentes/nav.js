@@ -160,20 +160,6 @@ const NavDev = () => {
   }
 };
 
-const Tematicas = () => {
-  if (tematica) {
-    tematica.innerHTML = ` 
-      <select id="select-tematica" required
-        class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-300 focus:outline-none focus:border-cyan-500 transition-all text-sm cursor-pointer">
-        <option value="" disabled selected>Ingrese la temática</option>
-        <option value="tecnologia">Tecnología</option>
-        <option value="restaurantes">Restaurantes</option>
-        <option value="ecommerce">Ecommerce / Tienda</option>
-        <option value="blog">Blog Personal</option>
-      </select>`;
-  }
-};
-
 const NavUserLogin = () =>{
 
 navBar.innerHTML = `
@@ -287,8 +273,6 @@ if (path === '/' || path === '/index.html') {
     NavCarrito();
 }else if (path.includes('/Web-Clientes')) {
     NavClientes(); 
-    Tematicas();
 }else if (path.includes('/Web-dev') || path.includes('/Web-Dev')) {
     NavDev(); 
-    Tematicas();
 }

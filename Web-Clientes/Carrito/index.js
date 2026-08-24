@@ -120,3 +120,5 @@ const cargarCarrito = async () => {
     cartContainer.innerHTML = `<p class="text-center py-8 text-red-400">Error al cargar las páginas agregadas.</p>`;
   }
 };
+
+

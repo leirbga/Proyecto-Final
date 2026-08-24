@@ -39,7 +39,6 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 
-// Protegemos la creación de publicaciones con userExtractor e isDev
 app.use('/api/CreateWeb', userExtractor, createWebRouter);
 app.use('/api/Carrito', userExtractor, carritoRouter);
 
