@@ -13,6 +13,7 @@ import loginRouter from './PaginaPrincipal/back/controllers/login.js';
 import createWebRouter from './PaginaPrincipal/back/controllers/createWebRouter.js';
 import logoutRouter from './PaginaPrincipal/back/controllers/logout.js';
 import carritoRouter from './PaginaPrincipal/back/controllers/carritoRouter.js';
+import misPaginasRouter from './PaginaPrincipal/back/controllers/mispaginas.js';
 
 // 💡 IMPORTACIÓN DE MIDDLEWARES UNIFICADOS
 import { userExtractor, isDev } from './middleware/auth.js';
@@ -41,6 +42,7 @@ app.use('/api/login', loginRouter);
 
 app.use('/api/CreateWeb', userExtractor, createWebRouter);
 app.use('/api/Carrito', userExtractor, carritoRouter);
+app.use('/api/MisPaginas', userExtractor, misPaginasRouter);
 
 // Logout
 app.use('/api/logout', logoutRouter);

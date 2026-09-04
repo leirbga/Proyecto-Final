@@ -4,56 +4,155 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="output.css">
-    <!-- Axios CDN por si nav.js o index.js consumen endpoints directamente -->
+    <!-- Axios CDN -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <title>WebCraft - Plantillas Web Modernas</title>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen pt-16">
+<body class="bg-slate-950 text-slate-100 min-h-screen pt-16 flex flex-col justify-between">
 
     <!-- Navbar Superior Dinámico -->
     <nav id="navBar" class="fixed top-0 right-0 left-0 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 z-50 h-16"></nav>
 
     <!-- Hero Section -->
-    <header id="bg-principal" class="relative bg-[url(/img/fondo.png)] bg-cover bg-center bg-no-repeat flex items-center justify-center w-full h-[65vh]">
-        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-slate-950/60 to-slate-950"></div>
-        <div class="relative z-10 text-center px-4 max-w-3xl mx-auto">
+    <header id="bg-principal" class="relative bg-[url(/img/fondo.png)] bg-cover bg-center bg-no-repeat flex items-center justify-center w-full h-[60vh] md:h-[65vh]">
+        <div class="absolute inset-0 bg-gradient-to-b from-slate-950/40 via-slate-950/70 to-slate-950"></div>
+        <div class="relative z-10 text-center px-4 max-w-3xl mx-auto space-y-4">
+            <span class="px-3 py-1 text-xs font-semibold rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 uppercase tracking-widest">
+                Diseño Web & Plantillas
+            </span>
             <h1 class="text-4xl md:text-6xl font-extrabold text-white tracking-tight drop-shadow-lg leading-tight">
                 Compra la plantilla web que quieras
             </h1>
-            <p class="mt-4 text-lg md:text-xl text-cyan-400 font-medium drop-shadow">
-                Diseño rápido, flexible y moderno con WebCraft
+            <p class="text-lg md:text-xl text-slate-300 font-medium drop-shadow max-w-2xl mx-auto">
+                Diseño rápido, flexible y moderno optimizado para potenciar tus proyectos con <span class="text-cyan-400 font-semibold">WebCraft</span>.
             </p>
         </div>
     </header>
 
-    <!-- Sección de Ejemplos / Destacados -->
-    <section class="max-w-7xl mx-auto px-6 py-12 flex flex-col gap-8">
+    <!-- Sección de Pasos / Cómo funciona -->
+    <section class="max-w-7xl mx-auto px-6 py-12 flex flex-col gap-10 w-full">
         
-        <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
-            <h2 class="text-2xl font-bold text-slate-100 tracking-wide">Ejemplos Destacados</h2>
-            <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">Popular</span>
+        <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-800 pb-4 gap-2">
+            <div>
+                <h2 class="text-2xl md:text-3xl font-bold text-white tracking-wide">¿Cómo Funciona WebCraft?</h2>
+                <p class="text-slate-400 text-sm mt-1">Obtén tu sitio web profesional en cuestión de minutos siguiendo estos sencillos pasos.</p>
+            </div>
+            <span class="self-start md:self-auto px-3 py-1 text-xs font-semibold rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5">
+                <i data-lucide="zap" class="w-3.5 h-3.5"></i> Proceso Rápido
+            </span>
         </div>
 
-        <!-- Grid de Ejemplos -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Grid de Tarjetas explicativas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            <div id="content1" class="min-h-[280px] rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all p-6 flex items-center justify-center font-bold text-slate-300 shadow-xl group">
-                <span class="group-hover:text-cyan-400 transition-colors">Prueba 1</span>
-            </div>
+            <!-- Paso 1 -->
+            <article id="content1" class="relative rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 transition-all duration-300 p-8 flex flex-col justify-between shadow-xl group overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/15 transition-all"></div>
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-slate-950 transition-all duration-300">
+                            <i data-lucide="layout-grid" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-4xl font-extrabold text-slate-800 group-hover:text-slate-700 transition-colors">01</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">1. Explora el Catálogo</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Navega por nuestra selección de plantillas optimizadas por temática, estilo y rango de precio. Encuentra el diseño perfecto para tu negocio o portafolio personal.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center text-xs font-medium text-slate-500 group-hover:text-slate-400">
+                    <span>Filtros avanzados disponibles</span>
+                </div>
+            </article>
 
-            <div id="content2" class="min-h-[280px] rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all p-6 flex items-center justify-center font-bold text-slate-300 shadow-xl group">
-                <span class="group-hover:text-cyan-400 transition-colors">Prueba 2</span>
-            </div>
+            <!-- Paso 2 -->
+            <article id="content2" class="relative rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 transition-all duration-300 p-8 flex flex-col justify-between shadow-xl group overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/15 transition-all"></div>
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-slate-950 transition-all duration-300">
+                            <i data-lucide="shopping-cart" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-4xl font-extrabold text-slate-800 group-hover:text-slate-700 transition-colors">02</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">2. Adquiere tu Plantilla</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Selecciona el paquete de tu preferencia y completa la compra de forma instantánea y segura a través de nuestra plataforma de pagos integrados.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center text-xs font-medium text-slate-500 group-hover:text-slate-400">
+                    <span>Procesamiento inmediato</span>
+                </div>
+            </article>
 
-            <div id="content3" class="min-h-[280px] rounded-2xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition-all p-6 flex items-center justify-center font-bold text-slate-300 shadow-xl group">
-                <span class="group-hover:text-cyan-400 transition-colors">Prueba 3</span>
-            </div>
+            <!-- Paso 3 -->
+            <article id="content3" class="relative rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 hover:bg-slate-900 transition-all duration-300 p-8 flex flex-col justify-between shadow-xl group overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/15 transition-all"></div>
+                <div>
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 group-hover:scale-110 group-hover:bg-cyan-500 group-hover:text-slate-950 transition-all duration-300">
+                            <i data-lucide="folder-check" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-4xl font-extrabold text-slate-800 group-hover:text-slate-700 transition-colors">03</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2 group-hover:text-cyan-400 transition-colors">3. Accede a "Mis Páginas"</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Una vez completada la compra, podrás ver tu sitio en la sección de <strong class="text-slate-200">Mis Páginas</strong>. Podrás ver enlaces directos a tus proyectos adquiridos.
+                    </p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center text-xs font-medium text-slate-500 group-hover:text-slate-400">
+                    <span>Acceso permanente y listo para usar</span>
+                </div>
+            </article>
 
         </div>
     </section>
 
+    <!-- Footer / Pie de página -->
+    <footer class="mt-16 bg-slate-900/80 border-t border-slate-800/80 w-full backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
+            
+            <!-- Marca y Copyright -->
+            <div class="flex flex-col items-center md:items-start gap-1">
+                <div class="flex items-center gap-2">
+                    <span class="text-lg font-bold text-white tracking-wide">WebCraft</span>
+                    <span class="text-xs px-2 py-0.5 rounded bg-slate-800 text-slate-400 border border-slate-700">v1.0</span>
+                </div>
+                <p class="text-slate-400 text-xs text-center md:text-left">
+                    Desarrollado por <span class="text-cyan-400 font-medium">Jose Oviedo</span>. Todos los derechos reservados.
+                </p>
+            </div>
+
+            <!-- Links de Contacto y Redes -->
+            <div class="flex items-center gap-4 text-slate-400">
+                <a href="https://github.com/DonOviedo" target="_blank" rel="noopener noreferrer" title="GitHub" 
+                   class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 hover:text-white hover:bg-slate-800 hover:border-cyan-500/50 transition-all">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" title="LinkedIn" 
+                   class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 hover:text-white hover:bg-slate-800 hover:border-cyan-500/50 transition-all">
+                    <i data-lucide="linkedin" class="w-5 h-5"></i>
+                </a>
+                <a href="mailto:tu-correo@ejemplo.com" title="Enviar Correo" 
+                   class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 hover:text-white hover:bg-slate-800 hover:border-cyan-500/50 transition-all">
+                    <i data-lucide="mail" class="w-5 h-5"></i>
+                </a>
+                <a href="https://wa.me/" target="_blank" rel="noopener noreferrer" title="WhatsApp" 
+                   class="p-2.5 rounded-lg bg-slate-800/60 border border-slate-700/60 hover:text-white hover:bg-slate-800 hover:border-cyan-500/50 transition-all">
+                    <i data-lucide="message-square" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </footer>
+
     <!-- Scripts ES Modules -->
     <script type="module" src="./componentes/nav.js"></script>
     <script type="module" src="index.js"></script>
+    
+    <!-- Inicializar Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
 </body>
 </html>

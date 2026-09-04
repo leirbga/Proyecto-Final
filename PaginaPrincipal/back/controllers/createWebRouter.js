@@ -1,18 +1,33 @@
 import express from 'express';
 import CreateWeb from '../models/createWeb.js';
+import User from '../models/users.js';
 
 const createWebRouter = express.Router();
 
 createWebRouter.get('/', async (req, res) => {
   try {
+    const userId = req.user?.id || req.user?._id;
 
-    const posts = await CreateWeb.find({}, 'title description price theme url image _id')
-      .sort({ createdAt: -1 });
+    const posts = await CreateWeb.find({}, 'title description price theme url image');
 
-    return res.status(200).json(posts);
+    let userCarritoIds = [];
+    let userBuysIds = [];
+
+    if (userId) {
+      const user = await User.findById(userId);
+      if (user) {
+        userCarritoIds = user.carrito.map(id => id.toString());
+        userBuysIds = user.buys.map(buy => buy.webPostId ? buy.webPostId.toString() : buy.toString());
+      }
+    }
+
+    return res.status(200).json({
+      posts,
+      userCarritoIds,
+      userBuysIds
+    });
   } catch (error) {
-    console.error('Error al obtener los posts:', error);
-    return res.status(500).json({ error: 'Error al cargar las publicaciones de MongoDB' });
+    return res.status(500).json({ error: error.message });
   }
 });
 

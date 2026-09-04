@@ -79,4 +79,37 @@ carritoRouter.delete('/:id', async (req, res) => {
   }
 });
 
+carritoRouter.post('/comprar', async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+
+    const user = await User.findById(userId).populate('carrito');
+
+    if (!user || user.carrito.length === 0) {
+      return res.status(400).json({ error: 'El carrito está vacío' });
+    }
+
+    const nuevasCompras = user.carrito.map(post => ({
+      webPostId: post._id,
+      title: post.title,
+      pricePaid: Number(post.price) || 0,
+      purchasedAt: new Date()
+    }));
+
+    user.buys.push(...nuevasCompras);
+    user.carrito = [];
+
+    await user.save();
+
+    return res.status(200).json({
+      message: 'Compra realizada con éxito',
+      buys: user.buys
+    });
+
+  } catch (error) {
+    console.error('Error al procesar la compra:', error);
+    return res.status(500).json({ error: 'Error al procesar la transacción' });
+  }
+});
+
 export default carritoRouter;

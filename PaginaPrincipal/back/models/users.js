@@ -16,6 +16,19 @@ const userSchema = new mongoose.Schema({
   carrito: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'CreateWeb'
+  }],
+  
+  buys: [{
+    webPostId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'CreateWeb'
+    },
+    title: String,
+    pricePaid: Number,
+    purchasedAt: {
+      type: Date,
+      default: Date.now
+    }
   }]
 });
 

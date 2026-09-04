@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finalizar Compra</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4">
+
+  <main class="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-3xl p-6 sm:p-8 shadow-2xl">
+    <!-- Encabezado -->
+    <div class="mb-6">
+      <a href="/Web-Clientes/Carrito" class="text-xs text-cyan-400 hover:underline mb-2 inline-block">← Volver al carrito</a>
+      <h1 class="text-2xl font-bold text-white">Detalles de Pago</h1>
+      <p class="text-slate-400 text-sm">Ingresa la información para completar tu pedido.</p>
+    </div>
+
+    <!-- Formulario de Tarjeta -->
+    <form id="checkout-form" class="space-y-4">
+      <!-- Nombre en la tarjeta -->
+      <div>
+        <label for="card-name" class="block text-xs font-medium text-slate-300 mb-1">Nombre en la tarjeta</label>
+        <input type="text" id="card-name" required placeholder="Ej. Jose Oviedo"
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
+      </div>
+
+      <!-- Número de tarjeta -->
+      <div>
+        <label for="card-number" class="block text-xs font-medium text-slate-300 mb-1">Número de tarjeta</label>
+        <input type="text" id="card-number" required maxlength="19" placeholder="4532 •••• •••• 8892"
+          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
+      </div>
+
+      <!-- Exp y CVC -->
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="card-exp" class="block text-xs font-medium text-slate-300 mb-1">Expiración (MM/AA)</label>
+          <input type="text" id="card-exp" required placeholder="12/28" maxlength="5"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
+        </div>
+        <div>
+          <label for="card-cvc" class="block text-xs font-medium text-slate-300 mb-1">CVC</label>
+          <input type="password" id="card-cvc" required placeholder="123" maxlength="4"
+            class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
+        </div>
+      </div>
+
+      <!-- Resumen rápido de la transacción -->
+      <div class="bg-slate-950/60 border border-slate-800/80 rounded-2xl p-4 mt-6 flex justify-between items-center">
+        <span class="text-sm text-slate-400">Total a Pagar</span>
+        <span id="checkout-total" class="text-xl font-black text-cyan-400">0$</span>
+      </div>
+
+      <!-- Botón de Pago -->
+      <button type="submit" id="btn-confirmar-pago"
+        class="w-full py-3.5 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold rounded-xl transition-all cursor-pointer shadow-lg shadow-cyan-500/10 mt-4">
+        Pagar y Confirmar
+      </button>
+    </form>
+  </main>
+
+  <script type="module" src="index.js"></script>
+</body>
+</html>

@@ -1,62 +1,101 @@
 import createNotificacion from "../componentes/notificaciones.js";
 
-export const templatesCreadas = async (containerId = 'shop-container') => {
+export const templatesCreadas = async (containerId = "shop-container", filtroId = "filtro-tematica") => {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   try {
     container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">Cargando publicaciones...</p>`;
+    
+    // Obtener publicaciones e historial de estado del usuario
+    const { data } = await axios.get("/api/CreateWeb");
+    const { posts, userCarritoIds = [], userBuysIds = [] } = data;
 
-    const { data: posts } = await axios.get('/api/CreateWeb');
-
-    if (posts.length === 0) {
-      container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">No hay publicaciones disponibles.</p>`;
-      return;
-    }
-
-    container.innerHTML = '';
-
-    posts.forEach((post) => {
-      const card = document.createElement('div');
-      card.className = 'bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between';
-
-      card.innerHTML = `
-        <div class="p-3 border-b border-slate-800 text-center font-semibold text-white truncate">
-          ${post.title}
-        </div>
-        
-        <div class="relative">
-          <img src="${post.image || '/img/placeholder.png'}" alt="${post.title}" class="w-full h-36 object-cover">
-        </div>
-
-        <div class="p-3 text-center border-t border-slate-800">
-          <span class="text-sm font-bold text-slate-300">Precio: $${post.price}</span>
-        </div>
-
-        <div class="p-3 bg-slate-950/50 flex items-center justify-between gap-2 border-t border-slate-800">
-          <button class="btn-add-cart flex-1 py-1.5 px-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded transition-colors">
-            Agregar
-          </button>
-          <button class="btn-details flex-1 py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded transition-colors">
-            Detalles
-          </button>
-        </div>
-      `;
-
-      // Eventos Corregidos
-      const postId = post.id || post._id;
-      card.querySelector('.btn-add-cart').addEventListener('click', () => agregarCarrito(postId));
-      card.querySelector('.btn-details').addEventListener('click', () => vistaDetalles(post));
-
-      container.appendChild(card);
-    });
+    renderizarTarjetas(posts, userCarritoIds, userBuysIds, container);
 
   } catch (error) {
-    console.error('Error al cargar la tienda:', error);
+    console.error("Error al cargar la tienda:", error);
     container.innerHTML = `<p class="text-center col-span-full py-8 text-red-400">Error al cargar las plantillas.</p>`;
   }
 };
 
+const renderizarTarjetas = (posts, userCarritoIds, userBuysIds, container) => {
+  if (!posts || posts.length === 0) {
+    container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">No hay publicaciones disponibles.</p>`;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  posts.forEach((post) => {
+    const postId = (post.id || post._id).toString();
+
+    // Comprobamos el estado actual
+    const yaComprado = userBuysIds.includes(postId);
+    const enCarrito = userCarritoIds.includes(postId);
+
+    // Definimos el marcado del botón según la jerarquía de estado:
+    // 1. Si ya se compró -> Botón desactivado
+    // 2. Si está en el carrito -> Botón "Ver Carrito" con redirección
+    // 3. Si no -> Botón estándar "Agregar"
+    let buttonHTML = '';
+
+    if (yaComprado) {
+      buttonHTML = `
+        <button disabled class="flex-1 py-1.5 px-3 bg-slate-800 text-slate-500 font-bold text-xs rounded border border-slate-700/50 cursor-not-allowed">
+          ✓ Comprado
+        </button>`;
+    } else if (enCarrito) {
+      buttonHTML = `
+        <a href="/Web-Clientes/Carrito" class="flex-1 text-center py-1.5 px-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded transition-colors">
+          Ver Carrito
+        </a>`;
+    } else {
+      buttonHTML = `
+        <button class="btn-add-cart flex-1 py-1.5 px-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded transition-colors">
+          Agregar
+        </button>`;
+    }
+
+    const card = document.createElement("div");
+    card.className = "bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between";
+
+    card.innerHTML = `
+      <div class="p-3 border-b border-slate-800 text-center font-semibold text-white truncate">
+        ${post.title}
+      </div>
+      
+      <div class="relative">
+        <img src="${post.image || "/img/placeholder.png"}" alt="${post.title}" class="w-full h-36 object-cover">
+      </div>
+
+      <div class="p-3 text-center border-t border-slate-800">
+        <span class="text-sm font-bold text-slate-300">Precio: $${post.price}</span>
+      </div>
+
+      <div class="p-3 bg-slate-950/50 flex items-center justify-between gap-2 border-t border-slate-800">
+        ${buttonHTML}
+        <button class="btn-details flex-1 py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded transition-colors">
+          Detalles
+        </button>
+      </div>
+    `;
+
+    // Asignar los eventos solo si el botón de agregar está presente en el DOM de la tarjeta
+    const btnAdd = card.querySelector(".btn-add-cart");
+    if (btnAdd) {
+      btnAdd.addEventListener("click", async () => {
+        await agregarCarrito(postId);
+        // Recargar la vista para actualizar el botón a "Ver Carrito"
+        templatesCreadas();
+      });
+    }
+
+    card.querySelector(".btn-details").addEventListener("click", () => vistaDetalles(post));
+
+    container.appendChild(card);
+  });
+};
 
 export const templatesFiltradas = async (theme, containerId = 'shop-container') => {
   const container = document.getElementById(containerId);

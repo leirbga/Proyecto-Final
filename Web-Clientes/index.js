@@ -9,10 +9,9 @@ document.addEventListener("DOMContentLoaded", () => {
   templatesCreadas("shop-container");
 
 
-  filtroTematica.addEventListener("change", async () => {
+filtroTematica.addEventListener("change", async () => {
   try {
     const temaSeleccionado = filtroTematica.value;
-    console.log(temaSeleccionado);
     if (temaSeleccionado === "todas" || temaSeleccionado === ""){
       templatesCreadas("shop-container");
     }else if (temaSeleccionado !== "todas"){
@@ -25,10 +24,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
- filtroPrecio.addEventListener("change", async () => {
+filtroPrecio.addEventListener("change", async () => {
   try {
     const precioSeleccionado = filtroPrecio.value;
-    console.log(precioSeleccionado);
     if (precioSeleccionado === "todos" || precioSeleccionado === ""){
       templatesCreadas("shop-container");
     }else if (precioSeleccionado !== "todas"){
