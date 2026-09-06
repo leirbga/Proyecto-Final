@@ -8,7 +8,8 @@ createWebRouter.get('/', async (req, res) => {
   try {
     const userId = req.user?.id || req.user?._id;
 
-    const posts = await CreateWeb.find({}, 'title description price theme url image');
+    // Agregamos 'whatsappCreator' a la proyección de campos a seleccionar
+    const posts = await CreateWeb.find({}, 'title description price theme url image whatsappCreator');
 
     let userCarritoIds = [];
     let userBuysIds = [];
@@ -34,19 +35,40 @@ createWebRouter.get('/', async (req, res) => {
 createWebRouter.get('/price/:price', async (req, res) => {
   try {
     const { price } = req.params;
+    const userId = req.user?.id || req.user?._id;
     let query = {};
 
     if (price === '0') {
       query.price = 0; // Gratis
     } else if (price === '15') {
-      query.price = { $lte: 15 }; // Menor o igual a $15 ($1 a $15)
+      query.price = { $lte: 15 }; // Menor o igual a $15
     } else if (price === '20+') {
       query.price = { $gt: 20 }; // Mayor a $20
     }
 
-    const posts = await CreateWeb.find(query, 'title description price theme url image _id').sort({ createdAt: -1 });
+    // Incluimos whatsappCreator en la proyección junto con los demás campos
+    const posts = await CreateWeb.find(
+      query, 
+      'title description price theme url image whatsappCreator _id'
+    ).sort({ createdAt: -1 });
 
-    return res.status(200).json(posts);
+    let userCarritoIds = [];
+    let userBuysIds = [];
+
+    if (userId) {
+      const user = await User.findById(userId);
+      if (user) {
+        userCarritoIds = user.carrito.map(id => id.toString());
+        userBuysIds = user.buys.map(buy => buy.webPostId ? buy.webPostId.toString() : buy.toString());
+      }
+    }
+
+    // Retornamos la misma estructura de objeto que en la ruta principal GET /
+    return res.status(200).json({
+      posts,
+      userCarritoIds,
+      userBuysIds
+    });
   } catch (error) {
     console.error('Error al obtener los posts por precio:', error);
     return res.status(500).json({ error: 'Error al cargar las publicaciones de MongoDB' });
@@ -55,20 +77,30 @@ createWebRouter.get('/price/:price', async (req, res) => {
 
 createWebRouter.get('/:theme', async (req, res) => {
   try {
-    const { theme } = req.params;
-    const posts = await CreateWeb.find({theme}, 'title description price theme url image _id')
-      .sort({ createdAt: -1 });
+    const userId = req.user?.id || req.user?._id;
+    const posts = await CreateWeb.find({ theme: req.params.theme });
 
-    return res.status(200).json(posts);
+    let userCarritoIds = [];
+    let userBuysIds = [];
+
+    if (userId) {
+      const user = await User.findById(userId);
+      if (user) {
+        userCarritoIds = user.carrito.map(id => id.toString());
+        userBuysIds = user.buys.map(buy => buy.webPostId ? buy.webPostId.toString() : buy.toString());
+      }
+    }
+
+    return res.status(200).json({ posts, userCarritoIds, userBuysIds });
   } catch (error) {
-    console.error('Error al obtener los posts:', error);
-    return res.status(500).json({ error: 'Error al cargar las publicaciones de MongoDB' });
+    return res.status(500).json({ error: error.message });
   }
 });
 
 createWebRouter.post('/', async (req, res) => {
   try {
-    const { title, description, price, theme, url, image } = req.body;
+    // 1. Incluimos whatsappCreator en la desestructuración de req.body
+    const { title, description, price, theme, url, image, whatsappCreator } = req.body;
 
     const userId = req.user?.id || req.user?._id;
 
@@ -76,6 +108,7 @@ createWebRouter.post('/', async (req, res) => {
       return res.status(401).json({ error: 'No se pudo autenticar el usuario' });
     }
 
+    // 2. Se lo pasamos a la nueva instancia de CreateWeb
     const newPost = new CreateWeb({
       title,
       description,
@@ -83,6 +116,7 @@ createWebRouter.post('/', async (req, res) => {
       theme,
       url,
       image,
+      whatsappCreator, // <-- AQUÍ ESTABA EL FALTANTE
       user: userId
     });
 

@@ -1,5 +1,11 @@
 import createNotificacion from "../componentes/notificaciones.js";
 
+// Función auxiliar para limpiar el número (solo números sin +, guiones o espacios)
+const formatearTelefono = (phone) => {
+  if (!phone) return "";
+  return phone.toString().replace(/[^0-9]/g, "");
+};
+
 export const renderizarMisPaginas = async (containerId = "mis-paginas-container") => {
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -27,6 +33,11 @@ export const renderizarMisPaginas = async (containerId = "mis-paginas-container"
     // Renderizar solo los productos que pertenecen a 'buys'
     misPaginas.forEach((pagina) => {
       const paginaId = pagina.id || pagina._id;
+      
+      // Se obtiene el teléfono desde la propiedad devuelta por el backend (p. ej. whatsappCreator o phone)
+      const rawPhone = pagina.whatsappCreator || pagina.phone || "";
+      const phoneLimpio = formatearTelefono(rawPhone);
+
       const card = document.createElement('div');
       card.className = 'bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between';
 
@@ -51,16 +62,25 @@ export const renderizarMisPaginas = async (containerId = "mis-paginas-container"
 
           <!-- Botón Contactar (exclusivo de páginas compradas) -->
           <button data-id="${paginaId}" data-title="${pagina.title}"
-                  class="btn-contactar flex-1 py-1.5 px-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded transition-colors flex items-center justify-center gap-1">
+                  class="btn-contactar flex-1 py-1.5 px-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs rounded transition-colors flex items-center justify-center gap-1 ${!phoneLimpio ? 'opacity-60 cursor-not-allowed' : ''}">
             Contactar
           </button>
         </div>
       `;
 
-      // Evento para el botón Contactar
+      // Evento para el botón Contactar por WhatsApp
       const btnContactar = card.querySelector('.btn-contactar');
       btnContactar.addEventListener('click', () => {
-        contactarSoporte(pagina);
+        if (!phoneLimpio) {
+          createNotificacion?.(true, "El creador no tiene un número registrado");
+          return;
+        }
+
+        const mensaje = encodeURIComponent(`Hola, tengo una consulta sobre mi página adquirida: "${pagina.title}"`);
+        const whatsappUrl = `https://wa.me/${phoneLimpio}?text=${mensaje}`;
+
+        // Abrir WhatsApp en pestaña nueva
+        window.open(whatsappUrl, '_blank');
       });
 
       container.appendChild(card);

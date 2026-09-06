@@ -1,20 +1,59 @@
 import createNotificacion from "../componentes/notificaciones.js";
 
-export const templatesCreadas = async (containerId = "shop-container", filtroId = "filtro-tematica") => {
+export const templatesCreadas = async (containerId = "shop-container") => {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   try {
     container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">Cargando publicaciones...</p>`;
     
-    // Obtener publicaciones e historial de estado del usuario
     const { data } = await axios.get("/api/CreateWeb");
-    const { posts, userCarritoIds = [], userBuysIds = [] } = data;
+    const { posts = [], userCarritoIds = [], userBuysIds = [] } = data;
 
     renderizarTarjetas(posts, userCarritoIds, userBuysIds, container);
 
   } catch (error) {
     console.error("Error al cargar la tienda:", error);
+    container.innerHTML = `<p class="text-center col-span-full py-8 text-red-400">Error al cargar las plantillas.</p>`;
+  }
+};
+
+export const templatesFiltradas = async (theme, containerId = 'shop-container') => {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  try {
+    container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">Cargando publicaciones...</p>`;
+
+    const { data } = await axios.get(`/api/CreateWeb/${theme}`);
+    const posts = Array.isArray(data) ? data : data.posts || [];
+    const userCarritoIds = data.userCarritoIds || [];
+    const userBuysIds = data.userBuysIds || [];
+
+    renderizarTarjetas(posts, userCarritoIds, userBuysIds, container);
+
+  } catch (error) {
+    console.error('Error al filtrar la tienda:', error);
+    container.innerHTML = `<p class="text-center col-span-full py-8 text-red-400">Error al cargar las plantillas.</p>`;
+  }
+};
+
+export const templatesPrice = async (price, containerId = 'shop-container') => {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  
+  try {
+    container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">Cargando publicaciones...</p>`;
+
+    const { data } = await axios.get(`/api/CreateWeb/price/${price}`);
+    const posts = Array.isArray(data) ? data : data.posts || [];
+    const userCarritoIds = data.userCarritoIds || [];
+    const userBuysIds = data.userBuysIds || [];
+
+    renderizarTarjetas(posts, userCarritoIds, userBuysIds, container);
+
+  } catch (error) {
+    console.error('Error al filtrar por precio:', error);
     container.innerHTML = `<p class="text-center col-span-full py-8 text-red-400">Error al cargar las plantillas.</p>`;
   }
 };
@@ -30,14 +69,9 @@ const renderizarTarjetas = (posts, userCarritoIds, userBuysIds, container) => {
   posts.forEach((post) => {
     const postId = (post.id || post._id).toString();
 
-    // Comprobamos el estado actual
     const yaComprado = userBuysIds.includes(postId);
     const enCarrito = userCarritoIds.includes(postId);
 
-    // Definimos el marcado del botón según la jerarquía de estado:
-    // 1. Si ya se compró -> Botón desactivado
-    // 2. Si está en el carrito -> Botón "Ver Carrito" con redirección
-    // 3. Si no -> Botón estándar "Agregar"
     let buttonHTML = '';
 
     if (yaComprado) {
@@ -81,142 +115,24 @@ const renderizarTarjetas = (posts, userCarritoIds, userBuysIds, container) => {
       </div>
     `;
 
-    // Asignar los eventos solo si el botón de agregar está presente en el DOM de la tarjeta
     const btnAdd = card.querySelector(".btn-add-cart");
     if (btnAdd) {
       btnAdd.addEventListener("click", async () => {
         await agregarCarrito(postId);
-        // Recargar la vista para actualizar el botón a "Ver Carrito"
         templatesCreadas();
       });
     }
 
-    card.querySelector(".btn-details").addEventListener("click", () => vistaDetalles(post));
+    // Le pasamos el estado a la función vistaDetalles
+    card.querySelector(".btn-details").addEventListener("click", () => vistaDetalles(post, yaComprado, enCarrito));
 
     container.appendChild(card);
   });
 };
 
-export const templatesFiltradas = async (theme, containerId = 'shop-container') => {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  try {
-    container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">Cargando publicaciones...</p>`;
-
-    const { data: posts } = await axios.get(`/api/CreateWeb/${(theme)}`);
-
-    if (posts.length === 0) {
-      container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">No hay publicaciones disponibles.</p>`;
-      return;
-    }
-
-    container.innerHTML = '';
-
-    posts.forEach((post) => {
-      const card = document.createElement('div');
-      card.className = 'bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between';
-
-      card.innerHTML = `
-        <div class="p-3 border-b border-slate-800 text-center font-semibold text-white truncate">
-          ${post.title}
-        </div>
-        
-        <div class="relative">
-          <img src="${post.image || '/img/placeholder.png'}" alt="${post.title}" class="w-full h-36 object-cover">
-        </div>
-
-        <div class="p-3 text-center border-t border-slate-800">
-          <span class="text-sm font-bold text-slate-300">Precio: $${post.price}</span>
-        </div>
-
-        <div class="p-3 bg-slate-950/50 flex items-center justify-between gap-2 border-t border-slate-800">
-          <button class="btn-add-cart flex-1 py-1.5 px-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded transition-colors">
-            Agregar
-          </button>
-          <button class="btn-details flex-1 py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded transition-colors">
-            Detalles
-          </button>
-        </div>
-      `;
-
-      // Eventos Corregidos
-      const postId = post.id || post._id;
-      card.querySelector('.btn-add-cart').addEventListener('click', () => agregarCarrito(postId));
-      card.querySelector('.btn-details').addEventListener('click', () => vistaDetalles(post));
-
-      container.appendChild(card);
-    });
-
-  } catch (error) {
-    console.error('Error al cargar la tienda:', error);
-    container.innerHTML = `<p class="text-center col-span-full py-8 text-red-400">Error al cargar las plantillas.</p>`;
-  }
-};
-
-
-export const templatesPrice = async (price, containerId = 'shop-container') => {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  
-  try {
-    container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">Cargando publicaciones...</p>`;
-
-    const { data: posts } = await axios.get(`/api/CreateWeb/price/${price}`);
-
-    if (posts.length === 0) {
-      container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">No hay publicaciones disponibles.</p>`;
-      return;
-    }
-
-    container.innerHTML = '';
-
-
-    posts.forEach((post) => {
-      const card = document.createElement('div');
-      card.className = 'bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col justify-between';
-
-      card.innerHTML = `
-        <div class="p-3 border-b border-slate-800 text-center font-semibold text-white truncate">
-          ${post.title}
-        </div>
-        
-        <div class="relative">
-          <img src="${post.image || '/img/placeholder.png'}" alt="${post.title}" class="w-full h-36 object-cover">
-        </div>
-
-        <div class="p-3 text-center border-t border-slate-800">
-          <span class="text-sm font-bold text-slate-300">Precio: $${post.price}</span>
-        </div>
-
-        <div class="p-3 bg-slate-950/50 flex items-center justify-between gap-2 border-t border-slate-800">
-          <button class="btn-add-cart flex-1 py-1.5 px-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded transition-colors">
-            Agregar
-          </button>
-          <button class="btn-details flex-1 py-1.5 px-3 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-xs rounded transition-colors">
-            Detalles
-          </button>
-        </div>
-      `;
-
-      // Eventos Corregidos
-      const postId = post.id || post._id;
-      card.querySelector('.btn-add-cart').addEventListener('click', () => agregarCarrito(postId));
-      card.querySelector('.btn-details').addEventListener('click', () => vistaDetalles(post));
-
-      container.appendChild(card);
-    });
-
-  } catch (error) {
-    console.error('Error al cargar la tienda:', error);
-    container.innerHTML = `<p class="text-center col-span-full py-8 text-red-400">Error al cargar las plantillas.</p>`;
-  }
-};
-
 const agregarCarrito = async (webPostId) => {
   try {
     const { data } = await axios.put("/api/Carrito", { webPostId });
-
     createNotificacion?.(false, "Producto añadido al carrito");
     return data;
   } catch (error) {
@@ -225,13 +141,32 @@ const agregarCarrito = async (webPostId) => {
   }
 };
 
-const vistaDetalles = (post) => {
+const vistaDetalles = (post, yaComprado, enCarrito) => {
   document.getElementById("modal-details")?.remove();
+
+  // Definimos el marcado del botón del modal según el estado actual
+  let modalButtonHTML = '';
+
+  if (yaComprado) {
+    modalButtonHTML = `
+      <button disabled class="flex-1 py-2 bg-slate-800 text-slate-500 font-bold text-sm rounded-lg border border-slate-700/50 cursor-not-allowed">
+        ✓ Comprado
+      </button>`;
+  } else if (enCarrito) {
+    modalButtonHTML = `
+      <a href="/Web-Clientes/Carrito" class="flex-1 text-center py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-sm rounded-lg transition-colors">
+        Ver Carrito
+      </a>`;
+  } else {
+    modalButtonHTML = `
+      <button id="modal-btn-add" class="flex-1 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm rounded-lg transition-colors">
+        Agregar
+      </button>`;
+  }
 
   const modal = document.createElement("div");
   modal.id = "modal-details";
-  modal.className =
-    "fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4";
+  modal.className = "fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4";
 
   modal.innerHTML = `
     <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-2xl w-full overflow-hidden shadow-2xl flex flex-col">
@@ -261,9 +196,7 @@ const vistaDetalles = (post) => {
           </div>
 
           <div class="flex items-center gap-3 pt-2">
-            <button id="modal-btn-add" class="flex-1 py-2 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-sm rounded-lg transition-colors">
-              Agregar
-            </button>
+            ${modalButtonHTML}
             <button id="modal-btn-close" class="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-sm rounded-lg transition-colors">
               Cerrar
             </button>
@@ -275,15 +208,16 @@ const vistaDetalles = (post) => {
 
   document.body.appendChild(modal);
 
-  document
-    .getElementById("modal-btn-close")
-    .addEventListener("click", () => modal.remove());
+  document.getElementById("modal-btn-close").addEventListener("click", () => modal.remove());
 
-  document
-    .getElementById("modal-btn-add")
-    .addEventListener("click", async () => {
+  // Asignar listener solo si el botón de agregar está presente en el modal
+  const modalBtnAdd = document.getElementById("modal-btn-add");
+  if (modalBtnAdd) {
+    modalBtnAdd.addEventListener("click", async () => {
       const postId = post.id || post._id;
       await agregarCarrito(postId);
       modal.remove();
+      templatesCreadas();
     });
+  }
 };

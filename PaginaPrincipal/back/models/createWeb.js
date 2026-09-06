@@ -27,13 +27,24 @@ const createWebSchema = new mongoose.Schema({
     type: String,
     default: ''
   },
-  
+  // Campo para el WhatsApp del Creador
+  whatsappCreator: {
+    type: String,
+    required: true,
+    trim: true,
+    set: (val) => {
+      if (!val) return val;
+      // Extrae solo los dígitos numéricos
+      const cleanNumber = val.replace(/\D/g, '');
+      // Asegura el prefijo https://wa.me/
+      return `https://wa.me/${cleanNumber}`;
+    }
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
- 
   buyers: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

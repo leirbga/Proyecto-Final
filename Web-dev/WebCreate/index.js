@@ -6,9 +6,30 @@ const descripcionInput = document.querySelector('#descripcion');
 const precioInput = document.querySelector('#precio');
 const urlDemoInput = document.querySelector('#url-demo');
 
+// Contenedor DIV que está presente en tu HTML (<div id="tematicas"></div>)
+const contenedorTematicas = document.querySelector('#tematicas');
+
+// Selectores para el número de WhatsApp
+const codigoPaisSelect = document.querySelector('#codigo-pais');
+const numeroWhatsappInput = document.querySelector('#numero-whatsapp');
+
 const inputImagen = document.querySelector('#input-imagen');
 const imgVistaPrevia = document.querySelector('#img-vista-previa');
 const contenidoPlaceholder = document.querySelector('#contenido-placeholder');
+
+// Inyectamos el <select> ÚNICO dentro del contenedor DIV
+if (contenedorTematicas) {
+  contenedorTematicas.innerHTML = `
+    <select id="select-tematica" required
+      class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 focus:outline-none focus:border-cyan-500 transition-all text-sm cursor-pointer">
+      <option value="" disabled selected class="bg-slate-900 text-slate-400">Seleccione temática</option>
+      <option value="tecnologia" class="bg-slate-900 text-slate-200">Tecnología</option>
+      <option value="restaurantes" class="bg-slate-900 text-slate-200">Restaurantes</option>
+      <option value="ecommerce" class="bg-slate-900 text-slate-200">Moda / Ecommerce</option>
+      <option value="blogs" class="bg-slate-900 text-slate-200">Blogs Personales</option>
+    </select>
+  `;
+}
 
 // Previsualización de la imagen
 inputImagen.addEventListener('change', (evento) => {
@@ -39,7 +60,7 @@ formCrearPost.addEventListener('submit', async (evento) => {
   evento.preventDefault();
 
   try {
-    
+    // Obtenemos el <select> generado dinámicamente
     const selectTematica = document.querySelector('#select-tematica');
     const valorTematica = selectTematica ? selectTematica.value : '';
 
@@ -48,11 +69,17 @@ formCrearPost.addEventListener('submit', async (evento) => {
       return;
     }
 
-   
     let imageBase64 = '';
     if (inputImagen && inputImagen.files.length > 0) {
       imageBase64 = await convertToBase64(inputImagen.files[0]);
     }
+
+    // Limpieza del número ingresado
+    const numeroLimpio = numeroWhatsappInput.value.replace(/[^0-9]/g, '');
+    const codigoPais = codigoPaisSelect.value;
+    
+    // Concatenación final (Ej: '58' + '4121234567' = '584121234567')
+    const whatsappCompleto = `${codigoPais}${numeroLimpio}`;
 
     const newPost = {
       title: tituloInput.value.trim(),
@@ -60,7 +87,8 @@ formCrearPost.addEventListener('submit', async (evento) => {
       price: Number(precioInput.value),
       theme: valorTematica,
       url: urlDemoInput.value.trim(),
-      image: imageBase64
+      image: imageBase64,
+      whatsappCreator: whatsappCompleto
     };
 
     const { data } = await axios.post('/api/CreateWeb', newPost);
