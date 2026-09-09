@@ -1,64 +1,56 @@
 import createNotificacion from "../componentes/notificaciones.js";
 
-export const templatesCreadas = async (containerId = "shop-container") => {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
+// ==========================================
+// FUNCIÓN AUXILIAR: REGISTRAR VISITA (PATCH)
+// ==========================================
+const registrarVisita = async (postId) => {
   try {
-    container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">Cargando publicaciones...</p>`;
-    
-    const { data } = await axios.get("/api/CreateWeb");
-    const { posts = [], userCarritoIds = [], userBuysIds = [] } = data;
-
-    renderizarTarjetas(posts, userCarritoIds, userBuysIds, container);
-
+    const { data } = await axios.patch(`/api/CreateWeb/${postId}/view`);
+    return data.views;
   } catch (error) {
-    console.error("Error al cargar la tienda:", error);
-    container.innerHTML = `<p class="text-center col-span-full py-8 text-red-400">Error al cargar las plantillas.</p>`;
+    console.error("Error al registrar la visita:", error);
   }
 };
 
-export const templatesFiltradas = async (theme, containerId = 'shop-container') => {
+// ==========================================
+// 1. FUNCIÓN PRINCIPAL DE CARGA Y FILTRADO (CLIENTE)
+// ==========================================
+export const cargarTemplates = async (theme = "todas", price = "todos", containerId = "shop-container") => {
   const container = document.getElementById(containerId);
   if (!container) return;
 
   try {
     container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">Cargando publicaciones...</p>`;
 
-    const { data } = await axios.get(`/api/CreateWeb/${theme}`);
+    const params = new URLSearchParams();
+    if (theme && theme !== "todas") params.append("theme", theme);
+    if (price && price !== "todos") params.append("price", price);
+
+    const queryString = params.toString() ? `?${params.toString()}` : "";
+    const { data } = await axios.get(`/api/CreateWeb${queryString}`);
+
     const posts = Array.isArray(data) ? data : data.posts || [];
     const userCarritoIds = data.userCarritoIds || [];
     const userBuysIds = data.userBuysIds || [];
 
-    renderizarTarjetas(posts, userCarritoIds, userBuysIds, container);
+    container.dataset.currentTheme = theme;
+    container.dataset.currentPrice = price;
+
+    // Para clientes comunes pasamos esDev = false
+    renderizarTarjetas(posts, userCarritoIds, userBuysIds, container, false);
 
   } catch (error) {
-    console.error('Error al filtrar la tienda:', error);
+    console.error("Error al cargar las plantillas:", error);
     container.innerHTML = `<p class="text-center col-span-full py-8 text-red-400">Error al cargar las plantillas.</p>`;
   }
 };
 
-export const templatesPrice = async (price, containerId = 'shop-container') => {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-  
-  try {
-    container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">Cargando publicaciones...</p>`;
+export const templatesCreadas = (containerId) => cargarTemplates("todas", "todos", containerId);
 
-    const { data } = await axios.get(`/api/CreateWeb/price/${price}`);
-    const posts = Array.isArray(data) ? data : data.posts || [];
-    const userCarritoIds = data.userCarritoIds || [];
-    const userBuysIds = data.userBuysIds || [];
-
-    renderizarTarjetas(posts, userCarritoIds, userBuysIds, container);
-
-  } catch (error) {
-    console.error('Error al filtrar por precio:', error);
-    container.innerHTML = `<p class="text-center col-span-full py-8 text-red-400">Error al cargar las plantillas.</p>`;
-  }
-};
-
-const renderizarTarjetas = (posts, userCarritoIds, userBuysIds, container) => {
+// ==========================================
+// 2. RENDERIZADO DE TARJETAS
+// ==========================================
+export const renderizarTarjetas = (posts, userCarritoIds, userBuysIds, container, esDev = false) => {
   if (!posts || posts.length === 0) {
     container.innerHTML = `<p class="text-center col-span-full py-8 text-slate-400">No hay publicaciones disponibles.</p>`;
     return;
@@ -68,7 +60,6 @@ const renderizarTarjetas = (posts, userCarritoIds, userBuysIds, container) => {
 
   posts.forEach((post) => {
     const postId = (post.id || post._id).toString();
-
     const yaComprado = userBuysIds.includes(postId);
     const enCarrito = userCarritoIds.includes(postId);
 
@@ -101,6 +92,13 @@ const renderizarTarjetas = (posts, userCarritoIds, userBuysIds, container) => {
       
       <div class="relative">
         <img src="${post.image || "/img/placeholder.png"}" alt="${post.title}" class="w-full h-36 object-cover">
+        
+        ${/* MOSTRAR VISTAS SOLO SI ES CREADOR / DEV */ ''}
+        ${esDev ? `
+          <span class="absolute top-2 right-2 bg-slate-950/80 text-cyan-400 font-medium text-[11px] px-2 py-0.5 rounded-full border border-slate-800">
+            👁️ ${post.views || 0}
+          </span>
+        ` : ''}
       </div>
 
       <div class="p-3 text-center border-t border-slate-800">
@@ -119,17 +117,25 @@ const renderizarTarjetas = (posts, userCarritoIds, userBuysIds, container) => {
     if (btnAdd) {
       btnAdd.addEventListener("click", async () => {
         await agregarCarrito(postId);
-        templatesCreadas();
+        const currentTheme = container.dataset.currentTheme || "todas";
+        const currentPrice = container.dataset.currentPrice || "todos";
+        cargarTemplates(currentTheme, currentPrice);
       });
     }
 
-    // Le pasamos el estado a la función vistaDetalles
-    card.querySelector(".btn-details").addEventListener("click", () => vistaDetalles(post, yaComprado, enCarrito));
+    // Al hacer clic en detalles se registra la visita en el backend pero se abre el modal limpio
+    card.querySelector(".btn-details").addEventListener("click", async () => {
+      await registrarVisita(postId);
+      vistaDetalles(post, yaComprado, enCarrito, container);
+    });
 
     container.appendChild(card);
   });
 };
 
+// ==========================================
+// 3. AGREGAR AL CARRITO Y MODAL
+// ==========================================
 const agregarCarrito = async (webPostId) => {
   try {
     const { data } = await axios.put("/api/Carrito", { webPostId });
@@ -141,10 +147,9 @@ const agregarCarrito = async (webPostId) => {
   }
 };
 
-const vistaDetalles = (post, yaComprado, enCarrito) => {
+const vistaDetalles = (post, yaComprado, enCarrito, container) => {
   document.getElementById("modal-details")?.remove();
 
-  // Definimos el marcado del botón del modal según el estado actual
   let modalButtonHTML = '';
 
   if (yaComprado) {
@@ -210,14 +215,16 @@ const vistaDetalles = (post, yaComprado, enCarrito) => {
 
   document.getElementById("modal-btn-close").addEventListener("click", () => modal.remove());
 
-  // Asignar listener solo si el botón de agregar está presente en el modal
   const modalBtnAdd = document.getElementById("modal-btn-add");
   if (modalBtnAdd) {
     modalBtnAdd.addEventListener("click", async () => {
       const postId = post.id || post._id;
       await agregarCarrito(postId);
       modal.remove();
-      templatesCreadas();
+      
+      const currentTheme = container?.dataset?.currentTheme || "todas";
+      const currentPrice = container?.dataset?.currentPrice || "todos";
+      cargarTemplates(currentTheme, currentPrice);
     });
   }
 };

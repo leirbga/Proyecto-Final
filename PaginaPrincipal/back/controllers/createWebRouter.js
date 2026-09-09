@@ -4,51 +4,74 @@ import User from '../models/users.js';
 
 const createWebRouter = express.Router();
 
-createWebRouter.get('/', async (req, res) => {
+// ==========================================
+// 1. RUTA ESPECÍFICA: MIS PÁGINAS (Debe ir ANTES de GET '/')
+// ==========================================
+createWebRouter.get('/MisPaginas', async (req, res) => {
   try {
     const userId = req.user?.id || req.user?._id;
+    if (!userId) return res.status(401).json({ error: 'Usuario no autenticado' });
 
-    // Agregamos 'whatsappCreator' a la proyección de campos a seleccionar
-    const posts = await CreateWeb.find({}, 'title description price theme url image whatsappCreator');
+    // Incluimos 'buyers' para contar las ventas de la plantilla
+    const posts = await CreateWeb.find(
+      { user: userId },
+      'title description price theme url image whatsappCreator views buyers _id'
+    ).sort({ createdAt: -1 });
 
-    let userCarritoIds = [];
-    let userBuysIds = [];
-
-    if (userId) {
-      const user = await User.findById(userId);
-      if (user) {
-        userCarritoIds = user.carrito.map(id => id.toString());
-        userBuysIds = user.buys.map(buy => buy.webPostId ? buy.webPostId.toString() : buy.toString());
-      }
-    }
-
-    return res.status(200).json({
-      posts,
-      userCarritoIds,
-      userBuysIds
-    });
+    return res.status(200).json({ posts });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 });
 
-createWebRouter.get('/price/:price', async (req, res) => {
+// PUT /api/CreateWeb/:id (Editar plantilla)
+createWebRouter.put('/:id', async (req, res) => {
   try {
-    const { price } = req.params;
+    const { id } = req.params;
+    const { title, description, price, theme, url } = req.body;
     const userId = req.user?.id || req.user?._id;
-    let query = {};
 
-    if (price === '0') {
-      query.price = 0; // Gratis
-    } else if (price === '15') {
-      query.price = { $lte: 15 }; // Menor o igual a $15
-    } else if (price === '20+') {
-      query.price = { $gt: 20 }; // Mayor a $20
+    const updatedPost = await CreateWeb.findOneAndUpdate(
+      { _id: id, user: userId },
+      { title, description, price: Number(price), theme, url },
+      { new: true }
+    );
+
+    if (!updatedPost) return res.status(404).json({ error: 'Post no encontrado o sin autorización' });
+
+    return res.status(200).json({ message: 'Plantilla actualizada', post: updatedPost });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
+// ==========================================
+// 2. RUTA GENERAL: TIENDA COMPLETA Y FILTROS
+// ==========================================
+createWebRouter.get('/', async (req, res) => {
+  try {
+    const { theme, price } = req.query;
+    const userId = req.user?.id || req.user?._id;
+
+    const filter = {};
+
+    if (theme && theme !== 'todas') {
+      filter.theme = theme;
     }
 
-    // Incluimos whatsappCreator en la proyección junto con los demás campos
+    if (price && price !== 'todos') {
+      if (price === '0') {
+        filter.price = 0;
+      } else if (price === '15') {
+        filter.price = { $lte: 15 };
+      } else if (price === '20+' || price === '20') {
+        filter.price = { $gt: 20 };
+      } else if (!isNaN(price)) {
+        filter.price = { $lte: Number(price) };
+      }
+    }
+
     const posts = await CreateWeb.find(
-      query, 
+      filter,
       'title description price theme url image whatsappCreator _id'
     ).sort({ createdAt: -1 });
 
@@ -63,52 +86,29 @@ createWebRouter.get('/price/:price', async (req, res) => {
       }
     }
 
-    // Retornamos la misma estructura de objeto que en la ruta principal GET /
     return res.status(200).json({
       posts,
       userCarritoIds,
       userBuysIds
     });
   } catch (error) {
-    console.error('Error al obtener los posts por precio:', error);
-    return res.status(500).json({ error: 'Error al cargar las publicaciones de MongoDB' });
-  }
-});
-
-createWebRouter.get('/:theme', async (req, res) => {
-  try {
-    const userId = req.user?.id || req.user?._id;
-    const posts = await CreateWeb.find({ theme: req.params.theme });
-
-    let userCarritoIds = [];
-    let userBuysIds = [];
-
-    if (userId) {
-      const user = await User.findById(userId);
-      if (user) {
-        userCarritoIds = user.carrito.map(id => id.toString());
-        userBuysIds = user.buys.map(buy => buy.webPostId ? buy.webPostId.toString() : buy.toString());
-      }
-    }
-
-    return res.status(200).json({ posts, userCarritoIds, userBuysIds });
-  } catch (error) {
+    console.error('Error al obtener los posts:', error);
     return res.status(500).json({ error: error.message });
   }
 });
 
+// ==========================================
+// 3. RUTA POST: CREAR TEMPLATE
+// ==========================================
 createWebRouter.post('/', async (req, res) => {
   try {
-    // 1. Incluimos whatsappCreator en la desestructuración de req.body
     const { title, description, price, theme, url, image, whatsappCreator } = req.body;
-
     const userId = req.user?.id || req.user?._id;
 
     if (!userId) {
       return res.status(401).json({ error: 'No se pudo autenticar el usuario' });
     }
 
-    // 2. Se lo pasamos a la nueva instancia de CreateWeb
     const newPost = new CreateWeb({
       title,
       description,
@@ -116,7 +116,7 @@ createWebRouter.post('/', async (req, res) => {
       theme,
       url,
       image,
-      whatsappCreator, // <-- AQUÍ ESTABA EL FALTANTE
+      whatsappCreator,
       user: userId
     });
 
@@ -129,6 +129,23 @@ createWebRouter.post('/', async (req, res) => {
 
   } catch (error) {
     console.error('Error al guardar el post:', error);
+    return res.status(500).json({ error: error.message });
+  }
+});
+
+
+// DELETE /api/CreateWeb/:id (Eliminar plantilla)
+createWebRouter.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user?.id || req.user?._id;
+
+    const deletedPost = await CreateWeb.findOneAndDelete({ _id: id, user: userId });
+
+    if (!deletedPost) return res.status(404).json({ error: 'Post no encontrado o sin autorización' });
+
+    return res.status(200).json({ message: 'Plantilla eliminada correctamente' });
+  } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 });

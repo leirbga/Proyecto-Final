@@ -1,66 +1,48 @@
-import { templatesCreadas, templatesFiltradas, templatesPrice } from "../PaginaPrincipal/Shop/shop.js";
+import { templatesCreadas } from "../PaginaPrincipal/Shop/shop.js";
 import TodosFiltros from "../PaginaPrincipal/componentes/filtros.js";
 
-TodosFiltros();
+document.addEventListener("DOMContentLoaded", async () => {
+  // 1. Cargar las opciones en los <select> de los filtros
+  if (typeof TodosFiltros === "function") {
+    await TodosFiltros();
+  }
 
-document.addEventListener("DOMContentLoaded", () => {
   const filtroTematica = document.querySelector("#filtro-tematica");
   const filtroPrecio = document.querySelector("#filtro-precio");
+
+  // 2. Cargar todas las plantillas al iniciar
   templatesCreadas("shop-container");
 
+  // 3. Función unificada para combinar ambos filtros
+  const aplicarFiltros = () => {
+    const tema = filtroTematica ? filtroTematica.value : "todas";
+    const precio = filtroPrecio ? filtroPrecio.value : "todos";
 
-filtroTematica.addEventListener("change", async () => {
-  try {
-    const temaSeleccionado = filtroTematica.value;
-    if (temaSeleccionado === "todas" || temaSeleccionado === ""){
+    // Caso 1: Sin filtros activos (mostrar todo)
+    if ((tema === "todas" || tema === "") && (precio === "todos" || precio === "")) {
       templatesCreadas("shop-container");
-    }else if (temaSeleccionado !== "todas"){
-      templatesFiltradas(temaSeleccionado);
+      return;
     }
-  
 
-  } catch (error) {
-    console.error("Hubo un error en el proceso:", error);
+    // Caso 2: Solo filtro por precio activo
+    if ((tema === "todas" || tema === "") && (precio !== "todos" && precio !== "")) {
+      templatesPrice(precio, "shop-container");
+      return;
+    }
+
+    // Caso 3: Filtro por temática activo (o combinado)
+    if (tema !== "todas" && tema !== "") {
+      templatesFiltradas(tema, precio, "shop-container");
+      return;
+    }
+  };
+
+  // 4. Asignar los eventos de cambio
+  if (filtroTematica) {
+    filtroTematica.addEventListener("change", aplicarFiltros);
+  }
+
+  if (filtroPrecio) {
+    filtroPrecio.addEventListener("change", aplicarFiltros);
   }
 });
-
-filtroPrecio.addEventListener("change", async () => {
-  try {
-    const precioSeleccionado = filtroPrecio.value;
-    if (precioSeleccionado === "todos" || precioSeleccionado === ""){
-      templatesCreadas("shop-container");
-    }else if (precioSeleccionado !== "todas"){
-      templatesPrice(precioSeleccionado);
-    }
-  
-
-  } catch (error) {
-    console.error("Hubo un error en el proceso:", error);
-  }
-});
- 
-});
-
-
-
-
-//  const aplicarFiltros = () => {
-//     const temaSeleccionado = filtroTematica.value;
-//     const precioSeleccionado = filtroPrecio.value;
-//     if (temaSeleccionado === "" || temaSeleccionado === "todas" && precioSeleccionado === "" || precioSeleccionado === "todos") {
-//       templatesCreadas("shop-container");
-//     } else if (temaSeleccionado != "todas"){
-//       templatesFiltradas(temaSeleccionado, "shop-container");
-//     } 
-//     else if (precioSeleccionado != "todos"){
-//       templatesPrice(precioSeleccionado, "shop-container");
-//     }
-//   };
-
-//   if(filtroTematica){
-//     filtroTematica.addEventListener("change", aplicarFiltros);
-//   }
-
-//   if(filtroPrecio){
-//     filtroPrecio.addEventListener("change", aplicarFiltros);
-//   }

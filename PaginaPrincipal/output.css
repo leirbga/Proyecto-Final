@@ -424,6 +424,9 @@
   .h-36 {
     height: calc(var(--spacing) * 36);
   }
+  .h-44 {
+    height: calc(var(--spacing) * 44);
+  }
   .h-\[60vh\] {
     height: 60vh;
   }
@@ -549,14 +552,23 @@
   .flex-col {
     flex-direction: column;
   }
+  .flex-wrap {
+    flex-wrap: wrap;
+  }
   .items-center {
     align-items: center;
+  }
+  .items-stretch {
+    align-items: stretch;
   }
   .justify-between {
     justify-content: space-between;
   }
   .justify-center {
     justify-content: center;
+  }
+  .justify-end {
+    justify-content: flex-end;
   }
   .gap-1 {
     gap: var(--spacing);
@@ -586,6 +598,11 @@
     --tw-space-y-reverse: 0;
     margin-block-start: calc(calc(var(--spacing) * 2) * var(--tw-space-y-reverse));
     margin-block-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-y-reverse)));
+  }
+  :where(.space-y-3 > :not(:last-child)) {
+    --tw-space-y-reverse: 0;
+    margin-block-start: calc(calc(var(--spacing) * 3) * var(--tw-space-y-reverse));
+    margin-block-end: calc(calc(var(--spacing) * 3) * calc(1 - var(--tw-space-y-reverse)));
   }
   :where(.space-y-4 > :not(:last-child)) {
     --tw-space-y-reverse: 0;
@@ -837,6 +854,12 @@
       background-color: color-mix(in oklab, var(--color-slate-950) 60%, transparent);
     }
   }
+  .bg-slate-950\/80 {
+    background-color: color-mix(in srgb, oklch(12.9% 0.042 264.695) 80%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-slate-950) 80%, transparent);
+    }
+  }
   .bg-slate-950\/90 {
     background-color: color-mix(in srgb, oklch(12.9% 0.042 264.695) 90%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -977,6 +1000,9 @@
   .pt-2 {
     padding-top: calc(var(--spacing) * 2);
   }
+  .pt-3 {
+    padding-top: calc(var(--spacing) * 3);
+  }
   .pt-4 {
     padding-top: calc(var(--spacing) * 4);
   }
@@ -994,6 +1020,9 @@
   }
   .pr-10 {
     padding-right: calc(var(--spacing) * 10);
+  }
+  .pb-2 {
+    padding-bottom: calc(var(--spacing) * 2);
   }
   .pb-3 {
     padding-bottom: calc(var(--spacing) * 3);
@@ -1097,6 +1126,9 @@
   .text-cyan-400 {
     color: var(--color-cyan-400);
   }
+  .text-emerald-400 {
+    color: var(--color-emerald-400);
+  }
   .text-red-200 {
     color: var(--color-red-200);
   }
@@ -1145,14 +1177,8 @@
   .placeholder-slate-500::placeholder {
     color: var(--color-slate-500);
   }
-  .accent-cyan-500 {
-    accent-color: var(--color-cyan-500);
-  }
   .opacity-0 {
     opacity: 0%;
-  }
-  .opacity-60 {
-    opacity: 60%;
   }
   .opacity-100 {
     opacity: 100%;
@@ -1447,9 +1473,6 @@
       border-color: color-mix(in oklab, var(--color-cyan-500) 50%, transparent);
     }
   }
-  .focus\:border-emerald-500:focus {
-    border-color: var(--color-emerald-500);
-  }
   .focus\:ring-1:focus {
     --tw-ring-shadow: var(--tw-ring-inset,) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color, currentcolor);
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -1506,11 +1529,17 @@
     .md\:w-2\/3 {
       width: calc(2 / 3 * 100%);
     }
+    .md\:w-48 {
+      width: calc(var(--spacing) * 48);
+    }
     .md\:grid-cols-2 {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .md\:grid-cols-3 {
       grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .md\:flex-col {
+      flex-direction: column;
     }
     .md\:flex-row {
       flex-direction: row;
@@ -1521,8 +1550,15 @@
     .md\:items-start {
       align-items: flex-start;
     }
+    .md\:justify-center {
+      justify-content: center;
+    }
     .md\:self-auto {
       align-self: auto;
+    }
+    .md\:border-t-0 {
+      border-top-style: var(--tw-border-style);
+      border-top-width: 0px;
     }
     .md\:border-r {
       border-right-style: var(--tw-border-style);
@@ -1532,8 +1568,18 @@
       border-bottom-style: var(--tw-border-style);
       border-bottom-width: 0px;
     }
+    .md\:border-l {
+      border-left-style: var(--tw-border-style);
+      border-left-width: 1px;
+    }
     .md\:p-8 {
       padding: calc(var(--spacing) * 8);
+    }
+    .md\:pt-0 {
+      padding-top: 0px;
+    }
+    .md\:pl-4 {
+      padding-left: calc(var(--spacing) * 4);
     }
     .md\:text-left {
       text-align: left;

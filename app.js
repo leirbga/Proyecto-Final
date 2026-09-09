@@ -41,6 +41,29 @@ app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 
 app.use('/api/CreateWeb', userExtractor, createWebRouter);
+app.get('/api/CreateWeb', async (req, res) => {
+  try {
+    const { theme, price } = req.query;
+    let query = {};
+
+    if (theme && theme !== 'todas') {
+      query.theme = theme;
+    }
+
+    if (price && price !== 'todos') {
+      // Ejemplo: si price viene como número o como rango '0-50'
+      query.price = { $lte: Number(price) };
+    }
+
+    const posts = await WebPost.find(query);
+    // ... resto de la lógica para userCarritoIds y userBuysIds
+    
+    res.json({ posts, userCarritoIds, userBuysIds });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.use('/api/Carrito', userExtractor, carritoRouter);
 app.use('/api/MisPaginas', userExtractor, misPaginasRouter);
 

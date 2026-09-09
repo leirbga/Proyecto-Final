@@ -1,16 +1,18 @@
 import { Router } from 'express';
-import bcrypt from 'bcrypt';
-import User from '../models/users.js';
-import axios from 'axios';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+import axios from 'axios';
+import User from '../models/users.js'; // Asegúrate de ajustar la ruta de tu modelo
 import { userExtractor } from '../../../middleware/auth.js';
 
 const usersRouter = Router();
 
+// =======================================================
+// RUTA DE REGISTRO DE USUARIO (Pública)
+// =======================================================
 usersRouter.post('/', async (req, res) => {
   try {
     const { name, email, password } = req.body;
-
 
     if (!name || !email || !password) {
       return res.status(400).json({ error: 'Todos los campos son obligatorios' });
@@ -18,15 +20,12 @@ usersRouter.post('/', async (req, res) => {
 
     const cleanEmail = email.toLowerCase().trim();
 
-  
     const existingUser = await User.findOne({ email: cleanEmail });
     if (existingUser) {
       return res.status(400).json({ error: 'El correo electrónico ya está registrado' });
     }
 
-    // =======================================================
-    // VERIFICACIÓN DE EMAIL CON ABSTRACT EMAIL REPUTATION API
-    // =======================================================
+    // Verificación con Abstract API
     try {
       const apiKey = process.env.ABSTRACT_API_KEY;
       const url = `https://emailreputation.abstractapi.com/v1/?api_key=${apiKey}&email=${cleanEmail}`;
@@ -43,11 +42,9 @@ usersRouter.post('/', async (req, res) => {
       console.error('Error al conectar con Abstract API:', apiError.message);
     }
 
-
     const saltRounds = 10;
     const passwordHash = await bcrypt.hash(password, saltRounds);
 
-  
     const newUser = new User({
       name,
       email: cleanEmail,
@@ -55,7 +52,6 @@ usersRouter.post('/', async (req, res) => {
       verified: true,
     });
 
-  
     await newUser.save();
 
     const token = jwt.sign(
@@ -63,7 +59,6 @@ usersRouter.post('/', async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET, 
       { expiresIn: '1d' }
     );
-    
 
     res.cookie('accessToken', token, {
       httpOnly: true,
@@ -88,5 +83,41 @@ usersRouter.post('/', async (req, res) => {
   }
 });
 
+// =======================================================
+// RUTA MIS COMPRAS (Protegida con userExtractor)
+// =======================================================
+usersRouter.get('/mis-compras', userExtractor, async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+    if (!userId) return res.status(401).json({ error: 'No autenticado' });
+
+    // Hacemos populate del modelo CreateWeb referenciado en webPostId
+    const user = await User.findById(userId).populate('buys.webPostId');
+    if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
+
+    // Mapeamos los datos fusionando la compra con los datos del post original
+    const misCompras = user.buys
+      .map(buy => {
+        const post = buy.webPostId;
+        if (!post) return null; // Si el post fue eliminado de la BD, se descarta
+
+        return {
+          id: post._id || post.id,
+          title: buy.title || post.title,
+          image: post.image,
+          url: post.url,
+          whatsappCreator: post.whatsappCreator || post.whatsapp || "",
+          pricePaid: buy.pricePaid,
+          purchasedAt: buy.purchasedAt
+        };
+      })
+      .filter(Boolean); // Elimina valores null
+
+    return res.status(200).json(misCompras);
+  } catch (error) {
+    console.error('Error en GET /mis-compras:', error);
+    return res.status(500).json({ error: error.message });
+  }
+});
 
 export default usersRouter;
