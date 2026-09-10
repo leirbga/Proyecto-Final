@@ -76,7 +76,7 @@ app.use('/api/logout', logoutRouter);
 // ==========================================
 
 // Para acceder a Web-Dev, ejecutamos userExtractor primero para poblar req.user y luego isDev para verificar el rol
-app.get('/Web-dev', userExtractor, isDev, (req, res) => {
+app.get('/Web-Dev', userExtractor, isDev, (req, res) => {
   res.sendFile(path.join(__dirname, 'Web-Dev', 'index.html')); 
 });
 
