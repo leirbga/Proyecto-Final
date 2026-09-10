@@ -76,11 +76,11 @@ app.use('/api/logout', logoutRouter);
 // ==========================================
 
 // Para acceder a Web-Dev, ejecutamos userExtractor primero para poblar req.user y luego isDev para verificar el rol
-app.get('/Web-Dev', userExtractor, isDev, (req, res) => {
-  res.sendFile(path.join(__dirname, 'Web-Dev', 'index.html')); 
+app.get('/Web-dev', userExtractor, isDev, (req, res) => {
+  res.sendFile(path.join(__dirname, 'Web-dev', 'index.html')); 
 });
 
-app.use('/Web-Dev', userExtractor, isDev, express.static(path.join(__dirname, 'Web-Dev')));
+app.use('/Web-dev', userExtractor, isDev, express.static(path.join(__dirname, 'Web-dev')));
 
 // Vista protegida para Web-Clientes (requiere iniciar sesión)
 app.use('/Web-Clientes', userExtractor, express.static(path.join(__dirname, 'Web-Clientes')));
