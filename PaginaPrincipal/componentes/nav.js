@@ -19,9 +19,9 @@ const navHome = () => {
 
             <!-- Enlaces de Navegación -->
             <div class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
-                <a href="#" class="hover:text-cyan-400 transition-colors">Inicio</a>
-                <a href="#" class="hover:text-cyan-400 transition-colors">Acerca de</a>
-                <a href="#" class="hover:text-cyan-400 transition-colors">Contacto</a>
+                <a href="/" class="hover:text-cyan-400 transition-colors">Inicio</a>
+                <a href="#content1" class="hover:text-cyan-400 transition-colors">Acerca de</a>
+                <a href="#contacto" class="hover:text-cyan-400 transition-colors">Contacto</a>
             </div>
         </div>
 

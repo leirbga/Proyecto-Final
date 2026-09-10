@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Error - WebCraft</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4">
+
+  <main class="w-full max-w-md bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center shadow-2xl space-y-6">
+    <div class="inline-flex items-center justify-center w-16 h-16 bg-red-500/10 border border-red-500/20 rounded-2xl text-red-400 text-2xl font-bold">
+      ⚠️
+    </div>
+
+    <div class="space-y-2">
+      <h1 class="text-xl font-bold text-white">Oops, ha ocurrido un problema</h1>
+      <!-- Aquí se inyectará dinámicamente el mensaje que mande el middleware -->
+      <p id="error-message" class="text-slate-400 text-sm">Cargando detalles del error...</p>
+    </div>
+
+    <a href="/" class="w-full block py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold rounded-xl transition-all shadow-lg shadow-cyan-500/10">
+      Volver al menú principal
+    </a>
+  </main>
+
+  <script>
+    // Leer el parámetro 'mensaje' de la URL y pintarlo en pantalla
+    const params = new URLSearchParams(window.location.search);
+    const mensaje = params.get('mensaje');
+
+    if (mensaje) {
+      document.getElementById('error-message').textContent = mensaje;
+    }
+  </script>
+</body>
+</html>

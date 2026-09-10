@@ -97,7 +97,7 @@ app.use('/img', express.static(path.join(__dirname, 'img')));
 app.use('/componentes', express.static(path.join(__dirname, 'componentes')));
 app.use('/MisPaginas', express.static(path.join(__dirname, 'MisPaginas')));
 app.use('/Carrito', express.static(path.join(__dirname, 'Carrito')));
-
+app.use('/error', express.static(path.join(__dirname, 'PaginaPrincipal/error')));
 
 // ==========================================
 // CONEXIÓN A LA BASE DE DATOS Y SERVIDOR
