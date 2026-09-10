@@ -28,12 +28,19 @@ createWebRouter.get('/MisPaginas', async (req, res) => {
 createWebRouter.put('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, description, price, theme, url } = req.body;
+    const { title, description, price, theme, url, whatsappCreator } = req.body;
     const userId = req.user?.id || req.user?._id;
 
     const updatedPost = await CreateWeb.findOneAndUpdate(
       { _id: id, user: userId },
-      { title, description, price: Number(price), theme, url },
+      { 
+        title, 
+        description, 
+        price: Number(price), 
+        theme, 
+        url, 
+        whatsappCreator 
+      },
       { new: true }
     );
 
@@ -150,5 +157,30 @@ createWebRouter.delete('/:id', async (req, res) => {
   }
 });
 
+
+createWebRouter.patch('/:id/view', async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    if (!id) {
+      return res.status(400).json({ error: 'ID de la plantilla no proporcionado' });
+    }
+
+    // Incrementar de forma atómica el contador de vistas
+    const updatedPost = await CreateWeb.findByIdAndUpdate(
+      id,
+      { $inc: { views: 1 } },
+      { new: true }
+    );
+
+    if (!updatedPost) {
+      return res.status(404).json({ error: 'Plantilla no encontrada' });
+    }
+
+    return res.status(200).json({ views: updatedPost.views });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+});
 
 export default createWebRouter;

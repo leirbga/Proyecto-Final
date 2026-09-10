@@ -30,11 +30,19 @@ const userSchema = new mongoose.Schema({
       default: Date.now
     }
   }]
+}, {
+  timestamps: true // Agrega automáticamentecreatedAt y updatedAt al crear/actualizar
 });
 
 userSchema.set('toJSON', {
   transform: (document, returnedObject) => {
     returnedObject.id = returnedObject._id.toString();
+    
+    // Formatea la fecha de creación a un string legible (ej. "2026-03-30") o solo el año según prefieras
+    if (returnedObject.createdAt) {
+      returnedObject.joinedAt = returnedObject.createdAt.toISOString().split('T')[0];
+    }
+
     delete returnedObject._id;
     delete returnedObject.__v;
     delete returnedObject.passwordHash;

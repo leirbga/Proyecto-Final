@@ -3,3 +3,4 @@ import { renderizarMisComprasCliente } from "../../PaginaPrincipal/Shop/misPagin
 document.addEventListener("DOMContentLoaded", () => {
   renderizarMisComprasCliente("mis-paginas-container");
 });
+

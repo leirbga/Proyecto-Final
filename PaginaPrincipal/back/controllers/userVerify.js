@@ -2,7 +2,7 @@ import { Router } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
-import User from '../models/users.js'; // Asegúrate de ajustar la ruta de tu modelo
+import User from '../models/users.js'; // Ajusta la ruta de tu modelo si es necesario
 import { userExtractor } from '../../../middleware/auth.js';
 
 const usersRouter = Router();
@@ -84,6 +84,67 @@ usersRouter.post('/', async (req, res) => {
 });
 
 // =======================================================
+// RUTA OBTIENE EL PERFIL DEL USUARIO (Protegida)
+// =======================================================
+usersRouter.get('/profile', userExtractor, async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id; 
+
+    if (!userId) {
+      return res.status(401).json({ error: 'No autenticado' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    // Devuelve la información formateada mediante toJSON() de tu modelo
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error('Error en GET /profile:', error);
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+});
+
+// =======================================================
+// RUTA ACTUALIZA EL NOMBRE DE USUARIO (PATCH Protegido)
+// =======================================================
+usersRouter.patch('/profile', userExtractor, async (req, res) => {
+  try {
+    const userId = req.user?.id || req.user?._id;
+
+    if (!userId) {
+      return res.status(401).json({ message: 'No autenticado' });
+    }
+
+    const { name } = req.body;
+
+    if (!name || !name.trim()) {
+      return res.status(400).json({ message: 'El nombre es obligatorio' });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { name: name.trim() },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'Usuario no encontrado' });
+    }
+
+    return res.status(200).json({
+      message: 'Nombre actualizado correctamente',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('Error en PATCH /profile:', error);
+    return res.status(500).json({ message: 'Error interno del servidor al actualizar perfil' });
+  }
+});
+
+// =======================================================
 // RUTA MIS COMPRAS (Protegida con userExtractor)
 // =======================================================
 usersRouter.get('/mis-compras', userExtractor, async (req, res) => {
@@ -91,15 +152,13 @@ usersRouter.get('/mis-compras', userExtractor, async (req, res) => {
     const userId = req.user?.id || req.user?._id;
     if (!userId) return res.status(401).json({ error: 'No autenticado' });
 
-    // Hacemos populate del modelo CreateWeb referenciado en webPostId
     const user = await User.findById(userId).populate('buys.webPostId');
     if (!user) return res.status(404).json({ error: 'Usuario no encontrado' });
 
-    // Mapeamos los datos fusionando la compra con los datos del post original
     const misCompras = user.buys
       .map(buy => {
         const post = buy.webPostId;
-        if (!post) return null; // Si el post fue eliminado de la BD, se descarta
+        if (!post) return null;
 
         return {
           id: post._id || post.id,
@@ -111,7 +170,7 @@ usersRouter.get('/mis-compras', userExtractor, async (req, res) => {
           purchasedAt: buy.purchasedAt
         };
       })
-      .filter(Boolean); // Elimina valores null
+      .filter(Boolean);
 
     return res.status(200).json(misCompras);
   } catch (error) {

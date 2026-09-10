@@ -1,7 +1,17 @@
-import { templatesCreadas } from "../PaginaPrincipal/Shop/shop.js";
-import TodosFiltros from "../PaginaPrincipal/componentes/filtros.js";
+import { cargarTemplates, templatesCreadas } from "../../PaginaPrincipal/Shop/shop.js";
+import { renderizarMisComprasCliente } from "../../PaginaPrincipal/Shop/misPaginas.js";
+import TodosFiltros from "../../PaginaPrincipal/componentes/filtros.js";
+import { renderSocialLinks } from "../../PaginaPrincipal/componentes/links.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // 0. Renderizar los links sociales en el contenedor del sidebar
+  renderSocialLinks("social-links-container");
+
+  // Si estás en la sección de mis compras, renderizarlas
+  if (document.getElementById("mis-paginas-container")) {
+    renderizarMisComprasCliente("mis-paginas-container");
+  }
+
   // 1. Cargar las opciones en los <select> de los filtros
   if (typeof TodosFiltros === "function") {
     await TodosFiltros();
@@ -11,29 +21,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   const filtroPrecio = document.querySelector("#filtro-precio");
 
   // 2. Cargar todas las plantillas al iniciar
-  templatesCreadas("shop-container");
+  if (document.getElementById("shop-container")) {
+    templatesCreadas("shop-container");
+  }
 
-  // 3. Función unificada para combinar ambos filtros
+  // 3. Función unificada para combinar ambos filtros usando cargarTemplates de shop.js
   const aplicarFiltros = () => {
     const tema = filtroTematica ? filtroTematica.value : "todas";
     const precio = filtroPrecio ? filtroPrecio.value : "todos";
 
-    // Caso 1: Sin filtros activos (mostrar todo)
-    if ((tema === "todas" || tema === "") && (precio === "todos" || precio === "")) {
-      templatesCreadas("shop-container");
-      return;
-    }
-
-    // Caso 2: Solo filtro por precio activo
-    if ((tema === "todas" || tema === "") && (precio !== "todos" && precio !== "")) {
-      templatesPrice(precio, "shop-container");
-      return;
-    }
-
-    // Caso 3: Filtro por temática activo (o combinado)
-    if (tema !== "todas" && tema !== "") {
-      templatesFiltradas(tema, precio, "shop-container");
-      return;
+    if (document.getElementById("shop-container")) {
+      // cargarTemplates ya soporta ambos filtros de forma interna gracias a su URLSearchParams
+      cargarTemplates(tema, precio, "shop-container");
     }
   };
 

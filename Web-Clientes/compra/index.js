@@ -2,12 +2,49 @@ import createNotificacion from '../../PaginaPrincipal/componentes/notificaciones
 
 document.addEventListener('DOMContentLoaded', () => {
   obtenerTotalCarrito();
+  configurarMetodoPago();
 
   const checkoutForm = document.getElementById('checkout-form');
   if (checkoutForm) {
     checkoutForm.addEventListener('submit', procesarPago);
   }
 });
+
+// Configurar la alternancia dinámica entre Tarjeta y PayPal
+const configurarMetodoPago = () => {
+  const selectMetodo = document.getElementById("metodo-pago");
+  const containerTarjeta = document.getElementById("container-tarjeta");
+  const containerPaypal = document.getElementById("container-paypal");
+  const btnPagar = document.getElementById("btn-confirmar-pago");
+
+  if (!selectMetodo || !containerTarjeta || !containerPaypal) return;
+
+  const cardInputs = containerTarjeta.querySelectorAll("input");
+  const paypalInput = document.getElementById("paypal-email");
+
+  selectMetodo.addEventListener("change", (e) => {
+    const valor = e.target.value;
+
+    if (valor === "tarjeta") {
+      containerTarjeta.classList.remove("hidden");
+      containerPaypal.classList.add("hidden");
+      if (btnPagar) btnPagar.textContent = "Pagar y Confirmar";
+      
+      // Activar required en tarjeta, quitar en paypal
+      cardInputs.forEach(input => input.setAttribute("required", "true"));
+      if (paypalInput) paypalInput.removeAttribute("required");
+
+    } else if (valor === "paypal") {
+      containerTarjeta.classList.add("hidden");
+      containerPaypal.classList.remove("hidden");
+      if (btnPagar) btnPagar.textContent = "Pagar con PayPal";
+
+      // Quitar required en tarjeta, activar en paypal
+      cardInputs.forEach(input => input.removeAttribute("required"));
+      if (paypalInput) paypalInput.setAttribute("required", "true");
+    }
+  });
+};
 
 // 1. Mostrar el total del carrito en el resumen del checkout
 const obtenerTotalCarrito = async () => {
@@ -58,7 +95,9 @@ const procesarPago = async (e) => {
 
     if (btnSubmit) {
       btnSubmit.disabled = false;
-      btnSubmit.textContent = 'Pagar y Confirmar';
+      // Restaurar el texto del botón según el método seleccionado actualmente
+      const selectMetodo = document.getElementById("metodo-pago");
+      btnSubmit.textContent = (selectMetodo && selectMetodo.value === "paypal") ? "Pagar con PayPal" : "Pagar y Confirmar";
     }
   }
 };

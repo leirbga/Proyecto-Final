@@ -14,36 +14,63 @@
     <div class="mb-6">
       <a href="/Web-Clientes/Carrito" class="text-xs text-cyan-400 hover:underline mb-2 inline-block">← Volver al carrito</a>
       <h1 class="text-2xl font-bold text-white">Detalles de Pago</h1>
-      <p class="text-slate-400 text-sm">Ingresa la información para completar tu pedido.</p>
+      <p class="text-slate-400 text-sm">Selecciona un método de pago e ingresa la información.</p>
     </div>
 
-    <!-- Formulario de Tarjeta -->
-    <form id="checkout-form" class="space-y-4">
-      <!-- Nombre en la tarjeta -->
+    <!-- Formulario Principal -->
+   <form id="checkout-form" class="space-y-4">
+      
+      <!-- Selector de Método de Pago (Estilo Steam) -->
       <div>
-        <label for="card-name" class="block text-xs font-medium text-slate-300 mb-1">Nombre en la tarjeta</label>
-        <input type="text" id="card-name" required placeholder="Ej. Jose Oviedo"
-          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
+        <label for="metodo-pago" class="block text-xs font-medium text-slate-300 mb-1">Método de pago</label>
+        <select id="metodo-pago" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors cursor-pointer">
+          <option value="tarjeta">Tarjeta de Crédito / Débito</option>
+          <option value="paypal">PayPal</option>
+        </select>
       </div>
 
-      <!-- Número de tarjeta -->
-      <div>
-        <label for="card-number" class="block text-xs font-medium text-slate-300 mb-1">Número de tarjeta</label>
-        <input type="text" id="card-number" required maxlength="19" placeholder="4532 •••• •••• 8892"
-          class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
-      </div>
-
-      <!-- Exp y CVC -->
-      <div class="grid grid-cols-2 gap-4">
+      <!-- ================= CONTENEDOR 1: TARJETA ================= -->
+      <div id="container-tarjeta" class="space-y-4 pt-2">
+        <!-- Nombre en la tarjeta -->
         <div>
-          <label for="card-exp" class="block text-xs font-medium text-slate-300 mb-1">Expiración (MM/AA)</label>
-          <input type="text" id="card-exp" required placeholder="12/28" maxlength="5"
+          <label for="card-name" class="block text-xs font-medium text-slate-300 mb-1">Nombre en la tarjeta</label>
+          <input type="text" id="card-name" required placeholder="Ej. Jose Oviedo"
             class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
         </div>
+
+        <!-- Número de tarjeta -->
         <div>
-          <label for="card-cvc" class="block text-xs font-medium text-slate-300 mb-1">CVC</label>
-          <input type="password" id="card-cvc" required placeholder="123" maxlength="4"
+          <label for="card-number" class="block text-xs font-medium text-slate-300 mb-1">Número de tarjeta</label>
+          <input type="text" id="card-number" required maxlength="19" placeholder="4532 •••• •••• 8892"
             class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
+        </div>
+
+        <!-- Exp y CVC -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="card-exp" class="block text-xs font-medium text-slate-300 mb-1">Expiración (MM/AA)</label>
+            <input type="text" id="card-exp" required placeholder="12/28" maxlength="5"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
+          </div>
+          <div>
+            <label for="card-cvc" class="block text-xs font-medium text-slate-300 mb-1">CVC</label>
+            <input type="password" id="card-cvc" required placeholder="123" maxlength="4"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= CONTENEDOR 2: PAYPAL (Oculto por defecto) ================= -->
+      <div id="container-paypal" class="hidden space-y-4 pt-2">
+        <div class="bg-slate-950/60 border border-slate-800 rounded-2xl p-5 space-y-4">
+          <p class="text-sm text-slate-300 text-center">
+            Ingresa el correo electrónico asociado a tu cuenta de <span class="text-cyan-400 font-semibold">PayPal</span>.
+          </p>
+          <div>
+            <label for="paypal-email" class="block text-xs font-medium text-slate-300 mb-1">Correo de PayPal</label>
+            <input type="email" id="paypal-email" placeholder="tucorreo@example.com"
+              class="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500 transition-colors">
+          </div>
         </div>
       </div>
 

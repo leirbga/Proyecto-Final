@@ -23,38 +23,42 @@
                 <a href="/Web-dev/MisPaginas" id="btn-mis-paginas" class="w-full text-left px-4 py-2.5 rounded-lg font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
                     Mis Páginas
                 </a>
-                <a href="/Web-dev/WebCreate" id="btn-mis-paginas" class="w-full text-left px-4 py-2.5 rounded-lg font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
+                <a href="/Web-dev/WebCreate" id="btn-subir-template" class="w-full text-left px-4 py-2.5 rounded-lg font-semibold text-slate-400 hover:text-white hover:bg-slate-800/60 transition-all">
                     Subir Nuevo Template
                 </a>
             </div>
 
             <hr class="border-slate-800">
 
-        <div class="flex flex-col gap-1.5">
-          <label for="filtro-tematica" class="text-xs font-semibold uppercase tracking-wider text-slate-400">Temática</label>
-          <select id="filtro-tematica" class="w-full bg-slate-950/40 border border-slate-800/80 hover:border-slate-700 text-slate-200 text-xs rounded-lg p-2.5 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 cursor-pointer transition-all">
-          </select>
-        </div>
+            <div class="flex flex-col gap-1.5">
+              <label for="filtro-tematica" class="text-xs font-semibold uppercase tracking-wider text-slate-400">Temática</label>
+              <select id="filtro-tematica" class="w-full bg-slate-950/40 border border-slate-800/80 hover:border-slate-700 text-slate-200 text-xs rounded-lg p-2.5 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 cursor-pointer transition-all">
+              </select>
+            </div>
 
-        <!-- Filtro: Precio (Dropdown) -->
-        <div class="flex flex-col gap-1.5">
-          <label for="filtro-precio" class="text-xs font-semibold uppercase tracking-wider text-slate-400">Rango de Precio</label>
-          <select id="filtro-precio" class="w-full bg-slate-950/40 border border-slate-800/80 hover:border-slate-700 text-slate-200 text-xs rounded-lg p-2.5 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 cursor-pointer transition-all">
-          </select>
-        </div>
+            <!-- Filtro: Precio (Dropdown) -->
+            <div class="flex flex-col gap-1.5">
+              <label for="filtro-precio" class="text-xs font-semibold uppercase tracking-wider text-slate-400">Rango de Precio</label>
+              <select id="filtro-precio" class="w-full bg-slate-950/40 border border-slate-800/80 hover:border-slate-700 text-slate-200 text-xs rounded-lg p-2.5 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 cursor-pointer transition-all">
+              </select>
+            </div>
+
+             <hr class="border-slate-800">
+
+    <!-- CONTENEDOR DINÁMICO DE ENLACES SOCIAS -->
+      <div id="social-links-container" class="flex flex-col gap-2"></div>
         </aside>
-     <main class="flex-1 p-8">
-        
-        <div id="shop-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
-      </main>
-    </div>
-    
 
-     <!-- Contenedor dinámico de notificaciones -->
+        <main class="flex-1 p-8">
+            <div id="shop-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </main>
+    </div>
+
+    <!-- Contenedor dinámico de notificaciones -->
     <div id="notificacion" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
-
-<script type="module" src="../PaginaPrincipal/componentes/nav.js"></script>
-<script type="module" src="index.js"></script>
+    <script type="module" src="../PaginaPrincipal/componentes/links.js"></script>
+    <script type="module" src="../PaginaPrincipal/componentes/nav.js"></script>
+    <script type="module" src="index.js"></script>
 </body>
 </html>

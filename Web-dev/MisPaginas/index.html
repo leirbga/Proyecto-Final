@@ -15,7 +15,7 @@
     <!-- Layout Principal: Sidebar + Contenido de Tienda -->
     <div class="flex min-h-[calc(100vh-4rem)]">
 
-        <!-- Sidebar Izquierdo: Filtros y Secciones -->
+        <!-- Sidebar Izquierdo: Secciones y Redes -->
         <aside class="w-64 bg-slate-900/50 border-r border-slate-800 p-6 flex flex-col gap-6 shrink-0">
             
             <!-- Navegación de Secciones -->
@@ -33,19 +33,8 @@
 
             <hr class="border-slate-800">
 
-            <!-- Filtro: Temática (Dropdown) -->
-            <div class="flex flex-col gap-1.5">
-                <label for="filtro-tematica" class="text-xs font-semibold uppercase tracking-wider text-slate-400">Temática</label>
-                <select id="filtro-tematica" class="w-full bg-slate-950/40 border border-slate-800/80 hover:border-slate-700 text-slate-200 text-xs rounded-lg p-2.5 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 cursor-pointer transition-all">
-                </select>
-            </div>
-
-            <!-- Filtro: Precio (Dropdown) -->
-            <div class="flex flex-col gap-1.5">
-                <label for="filtro-precio" class="text-xs font-semibold uppercase tracking-wider text-slate-400">Rango de Precio</label>
-                <select id="filtro-precio" class="w-full bg-slate-950/40 border border-slate-800/80 hover:border-slate-700 text-slate-200 text-xs rounded-lg p-2.5 outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 cursor-pointer transition-all">
-                </select>
-            </div>
+    <!-- CONTENEDOR DINÁMICO DE ENLACES SOCIAS -->
+      <div id="social-links-container" class="flex flex-col gap-2"></div>
 
         </aside>
 
@@ -60,6 +49,7 @@
     <div id="notificacion" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
 
     <!-- Scripts de la aplicación -->
+    <script type="module" src="../../PaginaPrincipal/componentes/links.js"></script>
     <script type="module" src="../../PaginaPrincipal/componentes/nav.js"></script>
     <script type="module" src="index.js"></script>
 </body>
