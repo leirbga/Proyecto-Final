@@ -1,117 +1,128 @@
-# 🚀 WebCraft - E-Commerce & Web Management Platform
+🚀 WebCraft - Plataforma E-Commerce y Gestión Web
 
-WebCraft is a full-stack, secure, and responsive e-commerce web application designed to offer a seamless experience for both clients and developers. The platform features role-based access control (RBAC), JWT authentication via `httpOnly` cookies, dynamic payment interfaces, and a strict API/View architecture hosted on Render.
+WebCraft es una aplicación web full-stack, segura y responsiva diseñada para ofrecer una experiencia fluida tanto a clientes como a desarrolladores. La plataforma cuenta con control de acceso basado en roles (RBAC), autenticación JWT mediante cookies httpOnly, interfaz de pagos dinámica y una arquitectura limpia que separa rutas de API de vistas HTML, optimizada para su despliegue en Render.
 
----
+🛠️ Tecnologías Utilizadas
 
-## 🛠️ Tech Stack
+Backend
 
-### **Backend**
-- **Node.js**: Server runtime environment.
-- **Express.js**: Web framework for API routes and static view serving.
-- **MongoDB & Mongoose**: NoSQL database and Object Data Modeling (ODM).
-- **JSON Web Tokens (JWT)**: Secure user session management via `httpOnly` cookies.
-- **Bcrypt**: Password hashing and verification.
-- **Cookie-Parser**: Middleware to handle HTTP cookies.
-- **CORS & Morgan**: Cross-origin request handling and HTTP request logging.
+Node.js: Entorno de ejecución de JavaScript en el servidor.
 
-### **Frontend**
-- **HTML5 & CSS3**: Structure and styling.
-- **Tailwind CSS**: Utility-first CSS framework for responsive design.
-- **JavaScript (ES6+)**: DOM manipulation and client-side logic.
-- **Axios / Fetch API**: Asynchronous HTTP requests to the backend.
+Express.js: Framework para la creación de la API REST y el servidor de archivos estáticos.
 
----
+MongoDB & Mongoose: Base de datos NoSQL y ODM para el modelado de datos.
 
-## ✨ Key Features
+JSON Web Tokens (JWT): Manejo seguro de sesiones de usuario almacenados en cookies httpOnly.
 
-1. **Secure JWT Authentication**:
-   - Registration and login system using `bcrypt` password hashing.
-   - Session management powered by JWTs stored in secure `httpOnly` cookies (`accessToken`) to prevent XSS attacks.
+Bcrypt: Encriptación y verificación segura de contraseñas.
 
-2. **Role-Based Access Control (RBAC)**:
-   - **Client Interface (`/Web-Clientes`)**: Protected environment for authenticated users to view products, manage the shopping cart, and complete orders.
-   - **Developer Panel (`/Web-Dev`)**: Restricted portal for users with `dev` permissions to manage system resources.
+Cookie-Parser: Middleware para la lectura y gestión de cookies en peticiones HTTP.
 
-3. **Dynamic Payment UI**:
-   - Interactive checkout supporting both Credit Card and PayPal.
-   - Synchronized client-side form validation that dynamically toggles required inputs based on the selected payment method.
+CORS & Morgan: Control de acceso de origen cruzado y registro de solicitudes HTTP en consola.
 
-4. **Dual Middleware Architecture**:
-   - **API Middlewares (`userExtractor`, `isDev`)**: Protects REST endpoints by returning structured JSON responses (`401`, `403`).
-   - **View Middlewares (`userExtractorView`, `isDevView`)**: Protects full HTML pages by redirecting unauthenticated or unauthorized users to a custom `/error/` page.
+Dotenv: Gestión de variables de entorno mediante archivos .env.
 
-5. **Smooth Internal Navigation**:
-   - Anchor links (`#acerca-de`, `#contacto`) with CSS `scroll-behavior: smooth` for fluid single-page scrolling.
+Frontend
 
----
+HTML5 & CSS3: Estructura semántica y diseño de interfaces.
 
-## 📁 Project Structure
+Tailwind CSS: Framework de CSS basado en clases de utilidad para interfaces responsivas.
 
-```text
-├── components/          # Reusable UI components
-├── img/                 # Application static images
-├── login/               # Login view assets
-├── registro/            # Registration view assets
-├── Carrito/             # Shopping cart view assets
-├── MisPaginas/          # User project management assets
-├── PaginaPrincipal/     # Main landing page & error templates
-│   ├── back/            # Models and API controllers
-│   │   ├── controllers/ # Express routes (login, users, cart, etc.)
-│   │   └── models/      # Mongoose schemas (User, WebPost, etc.)
-│   └── error/           # Centralized error view
-├── Web-Clientes/        # Protected client dashboard & store
-├── Web-Dev/             # Protected developer management panel
-├── middleware/          # Authentication & Authorization middlewares
-├── app.js               # Main Express application entry point
-├── .env                 # Environment variables (git-ignored)
-└── package.json         # Dependencies and scripts
-```
+JavaScript (ES6+): Lógica del cliente, manipulación del DOM y eventos.
 
----
+Axios / Fetch API: Peticiones HTTP asíncronas desde el cliente hacia el servidor.
 
-## ⚙️ Environment Variables
+✨ Características Principales
 
-Create a `.env` file in the root directory and configure the following variables:
+Autenticación Segura con JWT:
 
-```env
+Registro e inicio de sesión con cifrado de contraseñas mediante bcrypt.
+
+Manejo de sesiones con tokens guardados en cookies de tipo httpOnly (accessToken), previniendo ataques de tipo XSS.
+
+Control de Acceso Basado en Roles (RBAC):
+
+Zona de Clientes (/Web-Clientes): Entorno protegido para usuarios autenticados orientado a la exploración del catálogo, gestión del carrito y procesamiento de pedidos.
+
+Panel de Desarrolladores (/Web-Dev): Portal exclusivo restringido a usuarios con permisos de desarrollador (dev) para la administración del sistema.
+
+Pasarela de Pagos Dinámica e Interactiva:
+
+Interfaz interactiva compatible con Tarjeta de Crédito y PayPal.
+
+Validación del lado del cliente sincronizada que activa o desactiva la obligatoriedad de los campos (required) según el método seleccionado.
+
+Arquitectura de Middlewares Duales:
+
+Middlewares para API (userExtractor, isDev): Protegen las rutas REST devolviendo respuestas estructuradas en formato JSON (401, 403).
+
+Middlewares para Vistas (userExtractorView, isDevView): Protegen las vistas HTML completas redirigiendo a los usuarios no autorizados a la página centralizada /error/.
+
+Navegación Fluida (Smooth Scroll):
+
+Enlaces de anclaje interno (#acerca-de, #contacto) integrados con desplazamiento suave en la página principal.
+
+📁 Estructura del Proyecto
+
+├── componentes/         # Componentes de interfaz reutilizables
+├── img/                 # Recursos gráficos e imágenes estáticas
+├── login/               # Recursos visuales y scripts del Login
+├── registro/            # Recursos visuales y scripts del Registro
+├── Carrito/             # Vista y scripts del Carrito de compras
+├── MisPaginas/          # Vista para la gestión de proyectos de usuario
+├── PaginaPrincipal/     # Landing page principal y plantillas
+│   ├── back/            # Controladores y modelos del backend
+│   │   ├── controllers/ # Rutas Express (login, usuarios, carrito, etc.)
+│   │   └── models/      # Esquemas de Mongoose (User, WebPost, etc.)
+│   └── error/           # Vista centralizada de errores
+├── Web-Clientes/        # Panel y tienda para clientes autenticados
+├── Web-Dev/             # Panel exclusivo de administración para desarrolladores
+├── middleware/          # Middlewares de autenticación y autorización
+├── app.js               # Punto de entrada principal de la aplicación Express
+├── .env                 # Variables de entorno (excluido en git)
+└── package.json         # Dependencias y scripts del proyecto
+
+
+⚙️ Variables de Entorno
+
+Crea un archivo .env en la raíz del proyecto y configura las siguientes variables:
+
 PORT=3003
-MONGO_URI_TEST=your_mongodb_connection_string
-ACCESS_TOKEN_SECRET=your_jwt_secret_key
+MONGO_URI_TEST=tu_cadena_de_conexion_a_mongodb
+ACCESS_TOKEN_SECRET=tu_clave_secreta_para_jwt
 NODE_ENV=production
-```
 
----
 
-## 🚀 Getting Started
+🚀 Instalación y Configuración Local
 
-### Prerequisites
-- Node.js (v16+ recommended)
-- MongoDB database (local or MongoDB Atlas)
+Requisitos Previos
 
-### Installation
+Node.js (versión 16 o superior recomendada).
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/webcraft.git
-   cd webcraft
-   ```
+Instancia de MongoDB (local o MongoDB Atlas).
 
-2. **Install dependencies**:
-   ```bash
-   npm install
-   ```
+Pasos
 
-3. **Start the development server**:
-   ```bash
-   npm start
-   ```
+Clonar el repositorio:
 
-4. Open your browser and navigate to `http://localhost:3003`.
+git clone https://github.com/tu-usuario/webcraft.git
+cd webcraft
 
----
 
-## ☁️ Deployment Notes (Render)
+Instalar dependencias:
 
-- **Case-Sensitivity**: The production environment runs on Linux, which enforces strict case-sensitivity for file paths and Express routes (e.g., `/Web-Dev` vs `/Web-dev`). Ensure all route definitions match folder names exactly.
-- **Cookies**: Set `sameSite: 'lax'` (or `'strict'`) and `secure: process.env.NODE_ENV === 'production'` for production cookie safety.
+npm install
+
+
+Iniciar el servidor en desarrollo:
+
+npm start
+
+
+Abre tu navegador e ingresa a http://localhost:3003.
+
+☁️ Notas sobre el Despliegue en Producción (Render)
+
+Sensibilidad a Mayúsculas y Minúsculas (Case-Sensitivity en Linux): Render ejecuta el código en un entorno Linux, el cual distingue estrictamente entre mayúsculas y minúsculas en rutas de archivos y carpetas (por ejemplo, /Web-Dev es diferente de /Web-dev). Es imprescindible que los nombres de las carpetas coincidan exactamente con las rutas definidas en app.js y en las redirecciones del frontend.
+
+Configuración de Cookies: En el entorno de producción, asegúrate de mantener secure: process.env.NODE_ENV === 'production' y evaluar la política sameSite ('lax' o 'strict') para garantizar que el navegador transmita la cookie accessToken correctamente entre vistas y solicitudes asíncronas.
