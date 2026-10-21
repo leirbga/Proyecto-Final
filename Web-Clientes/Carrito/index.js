@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       
       // Redirecciona a la pestaña/vista de compra
-      window.location.href = '/Web-Clientes/Compra';
+      window.location.href = '/Web-Clientes/compra';
     });
   }
 });
